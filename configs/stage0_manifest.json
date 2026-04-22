@@ -31,7 +31,6 @@
     "data/raw/calendars/bea/full_release_schedule.html",
     "data/raw/calendars/bls/employment_situation.html",
     "data/raw/calendars/bls/current_year.html",
-    "data/raw/calendars/census/economic_indicators_calendar.html",
     "data/raw/calendars/fed_g17/release_dates.html"
   ],
   "required_alfred_series": [
@@ -65,5 +64,8 @@
   "optional_alfred_series": [
     "NAPM",
     "SP500"
+  ],
+  "optional_calendar_files": [
+    "data/raw/calendars/census/economic_indicators_calendar.html"
   ]
 }
