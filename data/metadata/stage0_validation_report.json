@@ -1,0 +1,90 @@
+{
+  "stage": "stage_0",
+  "status": "PASS",
+  "project_root": "/Users/haaminh109/Desktop/Minh/Tài liệu học tập (DSEB)/Kì 6/Time Series/Revision-Aware-Real-Time-Nowcasting-of-U.S.-GDP",
+  "results": {
+    "required_root_files": {
+      "present": [
+        "README.md",
+        "requirements.txt",
+        ".env.example",
+        ".gitignore"
+      ],
+      "missing": []
+    },
+    "required_directories": {
+      "present": [
+        "data/raw/rtdsm/routput",
+        "data/raw/alfred/vintage_dates",
+        "data/raw/alfred/series_observations",
+        "data/raw/bea/api",
+        "data/raw/calendars/bea",
+        "data/raw/calendars/bls",
+        "data/raw/calendars/census",
+        "data/raw/calendars/fed_g17",
+        "data/metadata"
+      ],
+      "missing": []
+    },
+    "required_rtdsm_files": {
+      "present": [
+        "data/raw/rtdsm/routput/ROUTPUTQvQd.xlsx",
+        "data/raw/rtdsm/routput/routput_first_second_third.xlsx"
+      ],
+      "missing": []
+    },
+    "optional_rtdsm_files": {
+      "present": [
+        "data/raw/rtdsm/routput/routputMvQd.xlsx"
+      ],
+      "missing": []
+    },
+    "required_bea_files": {
+      "present": [
+        "data/raw/bea/api/T10101_Q_ALL.json",
+        "data/raw/bea/api/T10106_Q_ALL.json"
+      ],
+      "missing": []
+    },
+    "required_calendar_files": {
+      "present": [
+        "data/raw/calendars/bea/full_release_schedule.html",
+        "data/raw/calendars/bls/employment_situation.html",
+        "data/raw/calendars/bls/current_year.html",
+        "data/raw/calendars/fed_g17/release_dates.html"
+      ],
+      "missing": []
+    },
+    "required_alfred_series": {
+      "present": [
+        "GDPC1",
+        "A191RL1Q225SBEA",
+        "PAYEMS",
+        "UNRATE",
+        "INDPRO",
+        "TCU",
+        "AWHMAN",
+        "W875RX1",
+        "DSPIC96",
+        "PCECC96",
+        "RSAFS",
+        "RSXFS",
+        "UMCSENT",
+        "HOUST",
+        "PERMIT",
+        "DGORDER",
+        "NEWORDER",
+        "BUSINV",
+        "ISRATIO",
+        "BOPGSTB",
+        "BOPTEXP",
+        "BOPTIMP",
+        "FEDFUNDS",
+        "TB3MS",
+        "GS10",
+        "T10Y3MM"
+      ],
+      "missing": []
+    }
+  }
+}
