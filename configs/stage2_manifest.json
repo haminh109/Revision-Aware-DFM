@@ -1,0 +1,419 @@
+{
+  "required_scripts": [
+    "scripts/stage2_semantic_registry.py",
+    "scripts/05_build_target_definition_tables.py",
+    "scripts/06_build_indicator_metadata.py",
+    "scripts/07_build_release_taxonomy_and_mappings.py",
+    "scripts/08_build_calendar_coverage_metadata.py",
+    "scripts/09_build_silver_curated_layer.py",
+    "scripts/validate_stage2.py"
+  ],
+  "artifacts": {
+    "target_definition_table": {
+      "path": "data/silver/targets/target_definition_table.csv",
+      "required_columns": [
+        "canonical_target_id",
+        "target_family",
+        "target_object_type",
+        "source_family",
+        "source_dataset",
+        "target_variable_id",
+        "measurement_semantics",
+        "unit_semantics",
+        "release_structure_type",
+        "comparability_group",
+        "is_real_time_release_target",
+        "is_revision_history_target",
+        "source_artifact",
+        "notes"
+      ],
+      "non_null_columns": [
+        "canonical_target_id",
+        "target_family",
+        "target_object_type",
+        "source_family",
+        "source_dataset",
+        "target_variable_id",
+        "measurement_semantics",
+        "unit_semantics",
+        "release_structure_type",
+        "comparability_group",
+        "is_real_time_release_target",
+        "is_revision_history_target",
+        "source_artifact",
+        "notes"
+      ],
+      "unique_key": [
+        "canonical_target_id"
+      ],
+      "sort_keys": [
+        "target_family",
+        "target_object_type",
+        "canonical_target_id"
+      ]
+    },
+    "gdp_release_stage_silver": {
+      "path": "data/silver/targets/gdp_release_stage_silver.csv",
+      "required_columns": [
+        "canonical_target_id",
+        "target_family",
+        "target_object_type",
+        "measurement_semantics",
+        "unit_semantics",
+        "release_structure_type",
+        "comparability_group",
+        "is_real_time_release_target",
+        "is_revision_history_target",
+        "source_family",
+        "source_dataset",
+        "source_file",
+        "source_sheet",
+        "target_variable_id",
+        "target_description",
+        "source_measure",
+        "source_measure_label",
+        "source_last_updated",
+        "target_quarter",
+        "target_year",
+        "target_quarter_number",
+        "release_stage",
+        "release_stage_order",
+        "release_date",
+        "release_date_status",
+        "value",
+        "notes"
+      ],
+      "non_null_columns": [
+        "canonical_target_id",
+        "target_family",
+        "target_object_type",
+        "measurement_semantics",
+        "unit_semantics",
+        "release_structure_type",
+        "comparability_group",
+        "is_real_time_release_target",
+        "is_revision_history_target",
+        "source_family",
+        "source_dataset",
+        "source_file",
+        "source_sheet",
+        "target_variable_id",
+        "target_description",
+        "source_measure",
+        "source_measure_label",
+        "source_last_updated",
+        "target_quarter",
+        "target_year",
+        "target_quarter_number",
+        "release_stage",
+        "release_stage_order",
+        "release_date_status",
+        "value",
+        "notes"
+      ],
+      "unique_key": [
+        "canonical_target_id",
+        "target_quarter",
+        "release_stage"
+      ],
+      "sort_keys": [
+        "target_year",
+        "target_quarter_number",
+        "release_stage_order"
+      ]
+    },
+    "gdp_complete_vintages_silver": {
+      "path": "data/silver/targets/gdp_complete_vintages_silver.csv",
+      "required_columns": [
+        "canonical_target_id",
+        "target_family",
+        "target_object_type",
+        "measurement_semantics",
+        "unit_semantics",
+        "release_structure_type",
+        "comparability_group",
+        "is_real_time_release_target",
+        "is_revision_history_target",
+        "source_family",
+        "source_dataset",
+        "source_file",
+        "source_sheet",
+        "target_variable_id",
+        "source_measure",
+        "target_quarter",
+        "target_year",
+        "target_quarter_number",
+        "vintage_period",
+        "vintage_year",
+        "vintage_quarter_number",
+        "vintage_label_raw",
+        "value",
+        "notes"
+      ],
+      "non_null_columns": [
+        "canonical_target_id",
+        "target_family",
+        "target_object_type",
+        "measurement_semantics",
+        "unit_semantics",
+        "release_structure_type",
+        "comparability_group",
+        "is_real_time_release_target",
+        "is_revision_history_target",
+        "source_family",
+        "source_dataset",
+        "source_file",
+        "source_sheet",
+        "target_variable_id",
+        "source_measure",
+        "target_quarter",
+        "target_year",
+        "target_quarter_number",
+        "vintage_period",
+        "vintage_year",
+        "vintage_quarter_number",
+        "vintage_label_raw",
+        "value",
+        "notes"
+      ],
+      "unique_key": [
+        "canonical_target_id",
+        "target_quarter",
+        "vintage_period"
+      ],
+      "sort_keys": [
+        "target_year",
+        "target_quarter_number",
+        "vintage_year",
+        "vintage_quarter_number"
+      ]
+    },
+    "indicator_metadata": {
+      "path": "data/silver/indicators/indicator_metadata.csv",
+      "required_columns": [
+        "series_id",
+        "canonical_indicator_id",
+        "source_family",
+        "series_frequency",
+        "provenance_observations_file",
+        "provenance_vintage_dates_file",
+        "release_block_candidate",
+        "release_block_mapping_status",
+        "calendar_support_type",
+        "indicator_family",
+        "observed_observation_start",
+        "observed_observation_end",
+        "observed_realtime_start",
+        "observed_realtime_end",
+        "notes"
+      ],
+      "non_null_columns": [
+        "series_id",
+        "canonical_indicator_id",
+        "source_family",
+        "series_frequency",
+        "provenance_observations_file",
+        "provenance_vintage_dates_file",
+        "release_block_candidate",
+        "release_block_mapping_status",
+        "calendar_support_type",
+        "indicator_family",
+        "observed_observation_start",
+        "observed_observation_end",
+        "observed_realtime_start",
+        "observed_realtime_end",
+        "notes"
+      ],
+      "unique_key": [
+        "series_id"
+      ],
+      "sort_keys": [
+        "series_id",
+        "canonical_indicator_id"
+      ]
+    },
+    "indicator_release_map": {
+      "path": "data/silver/indicators/indicator_release_map.csv",
+      "required_columns": [
+        "series_id",
+        "canonical_indicator_id",
+        "release_block",
+        "source_family_for_timing",
+        "mapping_confidence",
+        "mapping_basis",
+        "source_type",
+        "notes"
+      ],
+      "non_null_columns": [
+        "series_id",
+        "canonical_indicator_id",
+        "release_block",
+        "source_family_for_timing",
+        "mapping_confidence",
+        "mapping_basis",
+        "source_type",
+        "notes"
+      ],
+      "unique_key": [
+        "series_id",
+        "release_block"
+      ],
+      "sort_keys": [
+        "series_id",
+        "release_block"
+      ]
+    },
+    "release_block_taxonomy": {
+      "path": "data/silver/calendars/release_block_taxonomy.csv",
+      "required_columns": [
+        "release_block",
+        "release_block_label",
+        "observed_in_bronze_calendar",
+        "observed_source_families",
+        "observed_source_types",
+        "observed_source_subsources",
+        "timing_support_class",
+        "release_block_taxonomy_status",
+        "indicator_series_count",
+        "indicator_series_ids",
+        "notes"
+      ],
+      "non_null_columns": [
+        "release_block",
+        "release_block_label",
+        "observed_in_bronze_calendar",
+        "timing_support_class",
+        "release_block_taxonomy_status",
+        "indicator_series_count",
+        "notes"
+      ],
+      "unique_key": [
+        "release_block"
+      ],
+      "sort_keys": [
+        "release_block"
+      ]
+    },
+    "release_calendar_silver": {
+      "path": "data/silver/calendars/release_calendar_silver.csv",
+      "required_columns": [
+        "canonical_event_id",
+        "bronze_event_id",
+        "source_family",
+        "source_type",
+        "source_subsource",
+        "coverage_scope",
+        "coverage_status",
+        "release_block",
+        "release_name",
+        "reference_period_label",
+        "release_date",
+        "release_time_et",
+        "release_time_status",
+        "included_series",
+        "proxy_method",
+        "provenance_file",
+        "notes"
+      ],
+      "non_null_columns": [
+        "canonical_event_id",
+        "bronze_event_id",
+        "source_family",
+        "source_type",
+        "source_subsource",
+        "coverage_scope",
+        "coverage_status",
+        "release_block",
+        "release_name",
+        "release_date",
+        "release_time_status",
+        "provenance_file"
+      ],
+      "unique_key": [
+        "canonical_event_id"
+      ],
+      "sort_keys": [
+        "release_date",
+        "release_time_et",
+        "source_family",
+        "release_block",
+        "release_name",
+        "reference_period_label"
+      ]
+    },
+    "calendar_coverage_metadata": {
+      "path": "data/silver/calendars/calendar_coverage_metadata.csv",
+      "required_columns": [
+        "source_family",
+        "source_subsource",
+        "source_type",
+        "observed_coverage_scope",
+        "coverage_status",
+        "intended_research_role",
+        "is_historical_archive_complete",
+        "is_current_snapshot_only",
+        "has_official_release_time",
+        "has_only_release_date",
+        "is_proxy",
+        "downstream_usage_constraint",
+        "release_row_count_observed",
+        "release_blocks_observed",
+        "notes"
+      ],
+      "non_null_columns": [
+        "source_family",
+        "source_subsource",
+        "source_type",
+        "observed_coverage_scope",
+        "coverage_status",
+        "intended_research_role",
+        "is_historical_archive_complete",
+        "is_current_snapshot_only",
+        "has_official_release_time",
+        "has_only_release_date",
+        "is_proxy",
+        "downstream_usage_constraint",
+        "release_row_count_observed",
+        "notes"
+      ],
+      "unique_key": [
+        "source_family",
+        "source_subsource"
+      ],
+      "sort_keys": [
+        "source_family",
+        "source_subsource"
+      ]
+    },
+    "source_limitations_registry": {
+      "path": "data/silver/governance/source_limitations_registry.csv",
+      "required_columns": [
+        "limitation_id",
+        "domain",
+        "affected_artifact",
+        "severity",
+        "limitation_summary",
+        "downstream_constraint",
+        "status",
+        "notes"
+      ],
+      "non_null_columns": [
+        "limitation_id",
+        "domain",
+        "affected_artifact",
+        "severity",
+        "limitation_summary",
+        "downstream_constraint",
+        "status",
+        "notes"
+      ],
+      "unique_key": [
+        "limitation_id"
+      ],
+      "sort_keys": [
+        "domain",
+        "limitation_id"
+      ]
+    }
+  }
+}
