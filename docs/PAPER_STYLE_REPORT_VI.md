@@ -2,6 +2,8 @@
 
 ## Bản Report Theo Format Paper
 
+Lưu ý: file này là bản narrative viết tay để giúp đọc bài theo format paper. Sau các nâng cấp state-space mới nhất, số liệu nguồn chuẩn để đọc kết quả hiện tại là `outputs/reports/submission_mode_report.md` và các bảng trong `outputs/tables/headline_*.csv`.
+
 ### 1. Title
 
 **Release-Structured and Revision-Aware Real-Time Nowcasting of U.S. GDP**

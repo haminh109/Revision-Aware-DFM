@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Iterable
 
@@ -11,6 +12,9 @@ from realtime_gdp_nowcast.data.catalogs import required_series
 from realtime_gdp_nowcast.data.time import quarter_label_to_period
 from realtime_gdp_nowcast.features.panel import build_bridge_feature_store
 from realtime_gdp_nowcast.io import write_table
+from realtime_gdp_nowcast.models.dfm import estimate_quarterly_factor
+
+LOGGER = logging.getLogger(__name__)
 
 GDP_TARGET_TO_RELEASE_ROUND = {
     "A": "advance",
@@ -82,6 +86,50 @@ def get_bridge_features(settings: ProjectSettings, snapshot_panel: pd.DataFrame,
     write_table(features, feature_path)
     write_table(features, settings.paths.interim_data / "bridge_features.csv")
     return features
+
+
+def get_factor_store(settings: ProjectSettings, snapshot_panel: pd.DataFrame) -> pd.DataFrame:
+    feature_path = settings.paths.interim_data / "quarterly_factor_store.parquet"
+    snapshot_path = settings.paths.processed_data / "snapshot_panel.parquet"
+    expected_version = str(settings.get("models", "standard_dfm", "factor_store_version", default="state_space_v1"))
+    inputs_are_older_than_cache = (
+        feature_path.exists()
+        and snapshot_path.exists()
+        and feature_path.stat().st_mtime >= snapshot_path.stat().st_mtime
+        and feature_path.stat().st_mtime >= settings.config_path.stat().st_mtime
+    )
+    if inputs_are_older_than_cache:
+        cached = pd.read_parquet(feature_path)
+        cached_version = str(cached["factor_store_version"].iloc[0]) if not cached.empty and "factor_store_version" in cached.columns else ""
+        if cached_version == expected_version:
+            return cached
+
+    rows: list[pd.DataFrame] = []
+    keys = ["snapshot_mode", "checkpoint_id", "target_quarter_label"]
+    total_groups = snapshot_panel[keys].drop_duplicates().shape[0]
+    for index, (key, group) in enumerate(snapshot_panel.groupby(keys), start=1):
+        if index == 1 or index == total_groups or index % 100 == 0:
+            LOGGER.info("Building factor store | completed=%s/%s", index, total_groups)
+        snapshot_mode, checkpoint_id, target_quarter_label = key
+        quarterly_factor = estimate_quarterly_factor(group, target_quarter_label, settings)
+        if quarterly_factor.empty:
+            continue
+        quarterly_factor = quarterly_factor.copy()
+        quarterly_factor["snapshot_mode"] = snapshot_mode
+        quarterly_factor["checkpoint_id"] = checkpoint_id
+        quarterly_factor["forecast_target_quarter_label"] = target_quarter_label
+        quarterly_factor["factor_store_version"] = expected_version
+        rows.append(quarterly_factor)
+
+    if not rows:
+        return pd.DataFrame()
+    store = pd.concat(rows, ignore_index=True)
+    store = store.sort_values(
+        ["snapshot_mode", "checkpoint_id", "forecast_target_quarter_label", "target_quarter"]
+    ).reset_index(drop=True)
+    write_table(store, feature_path)
+    write_table(store, settings.paths.interim_data / "quarterly_factor_store.csv")
+    return store
 
 
 def build_release_feature_store(

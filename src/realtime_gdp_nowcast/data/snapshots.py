@@ -21,26 +21,30 @@ from realtime_gdp_nowcast.io import write_table
 LOGGER = logging.getLogger(__name__)
 
 
+def _coerce_checkpoint_timestamp(
+    timestamp: pd.Timestamp | None,
+    fallback_day: pd.Timestamp,
+    timezone: str,
+) -> pd.Timestamp:
+    if timestamp is not None and pd.notna(timestamp):
+        return pd.Timestamp(timestamp)
+    return end_of_day(fallback_day, timezone)
+
+
 def _release_date_in_month(
     event_panel: pd.DataFrame,
     series_ids: list[str],
     observation_month: pd.Period,
     month_period: pd.Period,
 ) -> pd.Timestamp | None:
-    month_start = month_period.to_timestamp(how="start").normalize()
-    month_end_ts = month_period.to_timestamp(how="end").normalize()
-    observation_start = observation_month.to_timestamp(how="start").normalize()
-    observation_end = observation_month.to_timestamp(how="end").normalize()
     candidates = event_panel[
         event_panel["series_id"].isin(series_ids)
-        & (event_panel["vintage_date"] >= month_start)
-        & (event_panel["vintage_date"] <= month_end_ts)
-        & (event_panel["observation_date"] >= observation_start)
-        & (event_panel["observation_date"] <= observation_end)
+        & (event_panel["observation_month"] == observation_month)
+        & (event_panel["release_month"] == month_period)
     ]
     if candidates.empty:
         return None
-    return pd.Timestamp(candidates["vintage_date"].max()).normalize()
+    return pd.Timestamp(candidates["public_release_timestamp_et"].max())
 
 
 def _build_exact_schedule(settings: ProjectSettings, release_calendar: pd.DataFrame, event_panel: pd.DataFrame) -> pd.DataFrame:
@@ -72,9 +76,14 @@ def _build_exact_schedule(settings: ProjectSettings, release_calendar: pd.DataFr
         )
         checkpoint_map = {
             "m1_end": m1_end,
-            "m2_labor": end_of_day(m2_date or last_business_day(window.second_month), settings.project["timezone"]),
-            "m3_spending_trade_inventories": end_of_day(
-                m3_date or last_business_day(window.third_month),
+            "m2_labor": _coerce_checkpoint_timestamp(
+                m2_date,
+                last_business_day(window.second_month),
+                settings.project["timezone"],
+            ),
+            "m3_spending_trade_inventories": _coerce_checkpoint_timestamp(
+                m3_date,
+                last_business_day(window.third_month),
                 settings.project["timezone"],
             ),
             "pre_advance": gdp_release_map.get(
@@ -170,6 +179,13 @@ def build_snapshots(settings: ProjectSettings) -> tuple[pd.DataFrame, pd.DataFra
     release_calendar = pd.read_parquet(release_calendar_path)
     series_catalog = required_series(settings)
     event_panel = event_panel[event_panel["series_id"].isin(series_catalog["series_id"])].copy()
+    event_panel["observation_month"] = pd.PeriodIndex(event_panel["observation_date"], freq="M")
+    event_panel["release_month"] = (
+        pd.to_datetime(event_panel["public_release_timestamp_et"])
+        .dt.tz_convert(settings.project["timezone"])
+        .dt.tz_localize(None)
+        .dt.to_period("M")
+    )
     event_panel = event_panel.sort_values(
         ["public_release_timestamp_et", "series_id", "observation_date", "vintage_date"]
     ).reset_index(drop=True)

@@ -153,9 +153,9 @@ def build_submission_pack(settings: ProjectSettings) -> str:
 
 ## Suggested Main Narrative
 
-- `bridge` is the strongest simple benchmark at the earliest within-quarter checkpoint.
-- `release_dfm` or `revision_dfm` becomes more competitive once the quarter accumulates more releases, especially at release-relevant checkpoints.
-- Exact timing tends to help structured models more than simple baselines, which is the core empirical lever for the paper.
+- At the earliest release-relevant checkpoint for `A`, the current winner is `standard_dfm`, which means the factor-extraction upgrade materially strengthened the non-release baseline.
+- `release_dfm` and `revision_dfm` dominate the later release-relevant checkpoints for `S` and `T`, which is the main evidence in favor of structured release modeling.
+- Exact timing helps more clearly for the later structured checkpoints than for the earliest `A` checkpoint, so the timing contribution should be framed as heterogeneous rather than universal.
 - Revision forecasting is currently economically interpretable but should be framed as an extension rather than the make-or-break contribution.
 
 ## Artifacts

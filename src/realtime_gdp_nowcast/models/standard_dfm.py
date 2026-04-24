@@ -3,8 +3,13 @@ from __future__ import annotations
 import pandas as pd
 
 from realtime_gdp_nowcast.config import ProjectSettings
-from realtime_gdp_nowcast.models.common import append_forecasts, get_known_target_value, load_model_inputs, ols_fit_predict
-from realtime_gdp_nowcast.models.dfm import estimate_quarterly_factor
+from realtime_gdp_nowcast.models.common import (
+    append_forecasts,
+    get_factor_store,
+    get_known_target_value,
+    load_model_inputs,
+    ols_fit_predict,
+)
 
 
 def run(settings: ProjectSettings) -> pd.DataFrame:
@@ -13,18 +18,18 @@ def run(settings: ProjectSettings) -> pd.DataFrame:
     schedule = inputs["schedule"]
     schedule_features = inputs["schedule_features"]
     targets_wide = inputs["targets_wide"]
+    factor_store = get_factor_store(settings, snapshot_panel)
     backtest_start = pd.Period(settings.sample["backtest_start_quarter"], freq="Q-DEC")
     records: list[dict[str, object]] = []
 
     for row in schedule.itertuples(index=False):
         if row.target_quarter < backtest_start:
             continue
-        snapshot_group = snapshot_panel[
-            (snapshot_panel["snapshot_mode"] == row.snapshot_mode)
-            & (snapshot_panel["checkpoint_id"] == row.checkpoint_id)
-            & (snapshot_panel["target_quarter_label"] == row.target_quarter_label)
+        quarterly_factor = factor_store[
+            (factor_store["snapshot_mode"] == row.snapshot_mode)
+            & (factor_store["checkpoint_id"] == row.checkpoint_id)
+            & (factor_store["forecast_target_quarter_label"] == row.target_quarter_label)
         ]
-        quarterly_factor = estimate_quarterly_factor(snapshot_group, row.target_quarter_label, settings)
         if quarterly_factor.empty:
             continue
         current_factor = quarterly_factor[quarterly_factor["target_quarter"] == row.target_quarter]

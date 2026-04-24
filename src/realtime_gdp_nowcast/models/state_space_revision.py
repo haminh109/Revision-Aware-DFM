@@ -17,7 +17,8 @@ REVISION_TARGETS = ["DELTA_SA", "DELTA_TS", "DELTA_MT"]
 
 
 def _logistic(value: float) -> float:
-    return 1.0 / (1.0 + np.exp(-value))
+    clipped = float(np.clip(value, -30.0, 30.0))
+    return 1.0 / (1.0 + np.exp(-clipped))
 
 
 def _bounded_ar(value: float) -> float:
@@ -25,7 +26,8 @@ def _bounded_ar(value: float) -> float:
 
 
 def _positive_variance(value: float) -> float:
-    return np.exp(value) + 1e-6
+    clipped = float(np.clip(value, -20.0, 20.0))
+    return np.exp(clipped) + 1e-6
 
 
 def _to_raw_ar(phi: float) -> float:

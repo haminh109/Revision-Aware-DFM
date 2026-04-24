@@ -7,8 +7,13 @@ import numpy as np
 import pandas as pd
 
 from realtime_gdp_nowcast.config import ProjectSettings
-from realtime_gdp_nowcast.models.common import append_forecasts, get_known_target_value, load_model_inputs, ols_fit_predict
-from realtime_gdp_nowcast.models.dfm import estimate_quarterly_factor
+from realtime_gdp_nowcast.models.common import (
+    append_forecasts,
+    get_factor_store,
+    get_known_target_value,
+    load_model_inputs,
+    ols_fit_predict,
+)
 from realtime_gdp_nowcast.io import write_table, write_text
 from realtime_gdp_nowcast.models.state_space_revision import (
     POINT_TARGETS,
@@ -130,25 +135,13 @@ def _structural_revision_forecast(
     return adjusted, revision_forecasts, fit.params, True, diagnostics
 
 
-def _build_factor_cache(snapshot_panel: pd.DataFrame, settings: ProjectSettings) -> dict[tuple[str, str, str], pd.DataFrame]:
-    factor_cache: dict[tuple[str, str, str], pd.DataFrame] = {}
-    keys = ["snapshot_mode", "checkpoint_id", "target_quarter_label"]
-    total_groups = snapshot_panel[keys].drop_duplicates().shape[0]
-    for index, (key, group) in enumerate(snapshot_panel.groupby(keys), start=1):
-        if index == 1 or index == total_groups or index % 100 == 0:
-            LOGGER.info("Building quarterly factor cache | completed=%s/%s", index, total_groups)
-        factor_cache[key] = estimate_quarterly_factor(group, key[2], settings)
-    return factor_cache
-
-
 def run(settings: ProjectSettings) -> pd.DataFrame:
     inputs = load_model_inputs(settings)
-    snapshot_panel = inputs["snapshot_panel"]
     schedule = inputs["schedule"]
     schedule_features = inputs["schedule_features"]
     targets_wide = inputs["targets_wide"]
     backtest_start = pd.Period(settings.sample["backtest_start_quarter"], freq="Q-DEC")
-    factor_cache = _build_factor_cache(snapshot_panel, settings)
+    factor_store = get_factor_store(settings, inputs["snapshot_panel"])
     schedule = schedule[schedule["target_quarter"] >= backtest_start].copy()
     schedule = schedule.sort_values(["snapshot_mode", "checkpoint_id", "target_quarter"]).reset_index(drop=True)
 
@@ -159,9 +152,12 @@ def run(settings: ProjectSettings) -> pd.DataFrame:
     approximation_fallbacks = 0
 
     for row in schedule.itertuples(index=False):
-        factor_key = (row.snapshot_mode, row.checkpoint_id, row.target_quarter_label)
-        quarterly_factor = factor_cache.get(factor_key)
-        if quarterly_factor is None or quarterly_factor.empty:
+        quarterly_factor = factor_store[
+            (factor_store["snapshot_mode"] == row.snapshot_mode)
+            & (factor_store["checkpoint_id"] == row.checkpoint_id)
+            & (factor_store["forecast_target_quarter_label"] == row.target_quarter_label)
+        ]
+        if quarterly_factor.empty:
             continue
         current_factor = quarterly_factor[quarterly_factor["target_quarter"] == row.target_quarter]
         if current_factor.empty:
