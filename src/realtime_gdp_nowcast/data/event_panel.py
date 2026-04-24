@@ -18,6 +18,15 @@ UNMAPPED_TIME_BY_SERIES = {
     "T10Y3MM": "23:59",
 }
 
+BRONZE_EVENT_DTYPES = {
+    "series_id": "string",
+    "observation_date": "string",
+    "realtime_start": "string",
+    "value_raw": "string",
+    "value_numeric": "string",
+    "is_missing_value": "string",
+}
+
 
 def _load_bronze_indicator_long(settings: ProjectSettings, series_ids: list[str]) -> pd.DataFrame:
     bronze_path = settings.paths.bronze_data / "indicators" / "alfred_monthly_long.csv"
@@ -33,7 +42,13 @@ def _load_bronze_indicator_long(settings: ProjectSettings, series_ids: list[str]
         "value_numeric",
         "is_missing_value",
     ]
-    for chunk in pd.read_csv(bronze_path, usecols=usecols, chunksize=500_000):
+    for chunk in pd.read_csv(
+        bronze_path,
+        usecols=usecols,
+        dtype=BRONZE_EVENT_DTYPES,
+        chunksize=500_000,
+        low_memory=False,
+    ):
         filtered = chunk[chunk["series_id"].isin(series_ids)].copy()
         if filtered.empty:
             continue
@@ -56,6 +71,8 @@ def build_event_panel(settings: ProjectSettings) -> pd.DataFrame:
 
     release_calendar = pd.read_parquet(calendar_path)
     release_calendar["public_release_date"] = pd.to_datetime(release_calendar["public_release_date"]).dt.normalize()
+    if "observation_date" in release_calendar.columns:
+        release_calendar["observation_date"] = pd.to_datetime(release_calendar["observation_date"], errors="coerce")
     series_df = all_series(settings)
     raw_events = _load_bronze_indicator_long(settings, series_df["series_id"].tolist())
     if raw_events.empty:
@@ -64,22 +81,68 @@ def build_event_panel(settings: ProjectSettings) -> pd.DataFrame:
     raw_events = raw_events[raw_events["observation_date"] >= pd.Timestamp(settings.sample["ingest_start"])].copy()
     raw_events["vintage_date"] = raw_events["realtime_start"].dt.normalize()
     raw_events = raw_events.merge(series_df, on="series_id", how="left")
-    enriched = raw_events.merge(
-        release_calendar[
-            [
-                "series_id",
-                "release_block",
-                "public_release_date",
-                "public_release_time_et",
-                "source_type",
-                "timing_assumption",
-                "release_time_status",
-            ]
-        ],
+    calendar_columns = [
+        "series_id",
+        "release_block",
+        "public_release_date",
+        "public_release_time_et",
+        "source_type",
+        "timing_assumption",
+        "release_time_status",
+    ]
+    if "observation_date" in release_calendar.columns:
+        calendar_columns.insert(1, "observation_date")
+
+    if "observation_date" in release_calendar.columns:
+        specific_calendar = release_calendar[release_calendar["observation_date"].notna()].copy()
+        generic_calendar = release_calendar[release_calendar["observation_date"].isna()].copy()
+    else:
+        specific_calendar = pd.DataFrame(columns=calendar_columns)
+        generic_calendar = release_calendar.copy()
+
+    enriched = raw_events.copy()
+    if not specific_calendar.empty:
+        enriched = enriched.merge(
+            specific_calendar[calendar_columns].rename(columns={"observation_date": "calendar_observation_date"}),
+            left_on=["series_id", "vintage_date", "observation_date"],
+            right_on=["series_id", "public_release_date", "calendar_observation_date"],
+            how="left",
+            suffixes=("", "_specific"),
+        )
+    else:
+        enriched["calendar_observation_date"] = pd.NaT
+        for column in ["release_block", "public_release_time_et", "source_type", "timing_assumption", "release_time_status"]:
+            enriched[column] = pd.NA
+
+    enriched = enriched.merge(
+        generic_calendar[[column for column in calendar_columns if column != "observation_date"]].rename(
+            columns={column: f"{column}_generic" for column in calendar_columns if column not in {"series_id", "observation_date"}}
+        ),
         left_on=["series_id", "vintage_date"],
-        right_on=["series_id", "public_release_date"],
+        right_on=["series_id", "public_release_date_generic"],
         how="left",
     )
+
+    for column in ["release_block", "public_release_time_et", "source_type", "timing_assumption", "release_time_status"]:
+        generic_column = f"{column}_generic"
+        if generic_column in enriched.columns:
+            enriched[column] = enriched[column].combine_first(enriched[generic_column])
+    if "public_release_date_generic" in enriched.columns:
+        enriched = enriched.drop(columns=["public_release_date_generic"])
+    drop_columns = [
+        column
+        for column in [
+            "calendar_observation_date",
+            "release_block_generic",
+            "public_release_time_et_generic",
+            "source_type_generic",
+            "timing_assumption_generic",
+            "release_time_status_generic",
+        ]
+        if column in enriched.columns
+    ]
+    if drop_columns:
+        enriched = enriched.drop(columns=drop_columns)
 
     unmapped_mask = enriched["public_release_time_et"].isna()
     if unmapped_mask.any():

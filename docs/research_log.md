@@ -7,6 +7,8 @@
 - Locked the downstream pipeline to build on top of bronze/silver, not to rebuild the existing data foundation from scratch.
 - Kept `ROUTPUT` from `RTDSM` as the GDP target backbone and `GDPC1` as the historical GDP release-date proxy.
 - Chose a conservative timing policy for currently unmapped financial/survey series: use `realtime_start` as a proxy only in the new processed layer, never overwrite Stage 2 semantics.
+- Replaced the old Census proxy design based on the union of availability dates with a stronger `first-release proxy` built from the earliest non-missing ALFRED vintage per observation for `retail_sales`, `housing`, `durable_goods`, `inventories`, and `trade`.
+- Updated checkpoint construction so exact schedules prefer mapped first-release proxy events over generic fallback vintage-day revisions whenever Census official calendar pages are unavailable.
 
 ## Open research issues
 

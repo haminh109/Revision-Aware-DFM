@@ -1,5 +1,5 @@
 project:
-  name: release_structured_revision_aware_nowcast
+  name: release_structured_revision_aware_nowcast_expanded_panel
   timezone: America/New_York
   gdp_release_proxy_series_id: GDPC1
   gdp_growth_proxy_series_id: A191RL1Q225SBEA
@@ -17,11 +17,11 @@ paths:
   raw_data: data/raw
   bronze_data: data/bronze
   silver_data: data/silver
-  interim_data: data/interim
-  processed_data: data/processed
-  outputs: outputs
+  interim_data: outputs/robustness/expanded_panel/interim
+  processed_data: outputs/robustness/expanded_panel/processed
+  outputs: outputs/robustness/expanded_panel
   docs: docs
-  series_catalog: configs/series_catalog.csv
+  series_catalog: configs/scenarios/series_catalog_expanded.csv
   target_catalog: configs/target_catalog.csv
 
 sample:
@@ -63,7 +63,7 @@ models:
     monthly_imputation_max_lag: 6
     factor_em_iterations: 5
     factor_min_history_months: 36
-    factor_store_version: state_space_v4
+    factor_store_version: state_space_v4_expanded_panel
   release_dfm:
     k_factors: 1
     factor_order: 2
@@ -85,18 +85,3 @@ reporting:
   headline_revision_checkpoints:
     DELTA_SA: pre_advance
     DELTA_TS: pre_second
-
-robustness:
-  freeze_name: submission_final
-  subsamples:
-    pre_gfc:
-      label: Pre-GFC
-      start_quarter: 2005Q1
-      end_quarter: 2007Q4
-    post_gfc:
-      label: Post-GFC
-      start_quarter: 2010Q1
-      end_quarter: 2024Q4
-  scenario_configs:
-    expanded_panel: configs/scenarios/expanded_panel.yaml
-    alternative_data_choice: configs/scenarios/alternative_data_choice.yaml

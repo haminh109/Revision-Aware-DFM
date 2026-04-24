@@ -3,7 +3,14 @@ from __future__ import annotations
 import pandas as pd
 
 from realtime_gdp_nowcast.config import ProjectSettings
-from realtime_gdp_nowcast.evaluation.metrics import bias, diebold_mariano, mae, rmse, sign_accuracy
+from realtime_gdp_nowcast.evaluation.metrics import (
+    bias,
+    diebold_mariano,
+    diebold_mariano_small_sample,
+    mae,
+    rmse,
+    sign_accuracy,
+)
 from realtime_gdp_nowcast.io import write_table
 
 GROUP_KEYS = ["snapshot_mode", "checkpoint_id", "target_id", "revision_target_flag"]
@@ -70,6 +77,7 @@ def build_evaluation_artifacts(settings: ProjectSettings, forecasts: pd.DataFram
         ref_frame = reference_lookup.get((snapshot_mode, checkpoint_id, target_id, revision_target_flag))
         relative_rmsfe = None
         dm_pvalue = None
+        dm_pvalue_small_sample = None
         n_comparable = 0
         if ref_frame is not None and not ref_frame.empty:
             aligned = _align_with_reference(frame, ref_frame)
@@ -78,6 +86,11 @@ def build_evaluation_artifacts(settings: ProjectSettings, forecasts: pd.DataFram
             model_rmse = rmse(aligned["realized_value"] - aligned["forecast_value"])
             relative_rmsfe = model_rmse / ref_rmse if ref_rmse and not pd.isna(ref_rmse) else None
             dm_pvalue = diebold_mariano(
+                aligned["realized_value"],
+                aligned["forecast_value"],
+                aligned["reference_forecast"],
+            )
+            dm_pvalue_small_sample = diebold_mariano_small_sample(
                 aligned["realized_value"],
                 aligned["forecast_value"],
                 aligned["reference_forecast"],
@@ -94,6 +107,7 @@ def build_evaluation_artifacts(settings: ProjectSettings, forecasts: pd.DataFram
                 "bias": bias(frame["error"]),
                 "relative_RMSFE": relative_rmsfe,
                 "DM_test": dm_pvalue,
+                "DM_test_small_sample": dm_pvalue_small_sample,
                 "sign_accuracy": sign_accuracy(frame["realized_value"], frame["forecast_value"]) if revision_target_flag else None,
                 "n_forecasts": len(frame),
                 "n_comparable": n_comparable,

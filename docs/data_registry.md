@@ -21,6 +21,7 @@
 
 - Official/proxy timing support comes first from `data/silver/indicators/indicator_release_map.csv` and `data/silver/calendars/release_calendar_silver.csv`.
 - Historical GDP release dates are inferred from `GDPC1` ALFRED vintage starts to recover first, second, and third release dates quarter by quarter.
+- Census-related blocks without a stable official scraper are upgraded to a `series-level first-release proxy` built from the earliest non-missing ALFRED vintage per observation, written to `data/interim/census_first_release_proxy_calendar.csv`.
 - For `currently_unmapped` series such as `UMCSENT`, `T10Y3MM`, `FEDFUNDS`, and `GS10`, the downstream pipeline uses `realtime_start` as a conservative availability-date proxy and logs the assumption in `research_log.md`.
 
 ## File conventions

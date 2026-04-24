@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -10,6 +11,13 @@ from realtime_gdp_nowcast.config import ProjectSettings
 from realtime_gdp_nowcast.models.common import append_forecasts, get_known_target_value, load_model_inputs
 
 LOGGER = logging.getLogger(__name__)
+
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    message=".*encountered in matmul.*",
+    module=r"statsmodels\.tsa\.ar_model",
+)
 
 
 def _forecast_single_series(series: pd.Series, min_lag: int, max_lag: int, ic: str) -> float:
@@ -23,16 +31,26 @@ def _forecast_single_series(series: pd.Series, min_lag: int, max_lag: int, ic: s
         if len(clean) <= lag + 5:
             continue
         try:
-            result = AutoReg(clean, lags=lag, old_names=False).fit()
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", RuntimeWarning)
+                result = AutoReg(clean, lags=lag, old_names=False).fit()
         except Exception:
             continue
         score = getattr(result, ic)
+        if not np.isfinite(score):
+            continue
         if score < best_score:
             best_score = score
             best_result = result
     if best_result is None:
         return float(clean.iloc[-1])
-    return float(best_result.forecast(steps=1).iloc[0])
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            forecast = float(best_result.forecast(steps=1).iloc[0])
+        return forecast if np.isfinite(forecast) else float(clean.iloc[-1])
+    except Exception:
+        return float(clean.iloc[-1])
 
 
 def run(settings: ProjectSettings) -> pd.DataFrame:

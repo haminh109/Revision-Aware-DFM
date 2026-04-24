@@ -2,7 +2,14 @@ import math
 
 import pandas as pd
 
-from realtime_gdp_nowcast.evaluation.metrics import bias, diebold_mariano, mae, rmse, sign_accuracy
+from realtime_gdp_nowcast.evaluation.metrics import (
+    bias,
+    diebold_mariano,
+    diebold_mariano_small_sample,
+    mae,
+    rmse,
+    sign_accuracy,
+)
 
 
 def test_error_metrics() -> None:
@@ -27,3 +34,12 @@ def test_diebold_mariano_ignores_misaligned_indices() -> None:
     )
     result = diebold_mariano(actual, pred_a, pred_b)
     assert not math.isnan(result)
+
+
+def test_diebold_mariano_small_sample_returns_pvalue() -> None:
+    actual = pd.Series([1.0, 2.0, 3.0, 4.0] * 4)
+    pred_a = pd.Series([1.1, 1.9, 2.9, 3.8] * 4)
+    pred_b = pd.Series([0.8, 2.5, 2.7, 4.4] * 4)
+    pvalue = diebold_mariano_small_sample(actual, pred_a, pred_b)
+    assert not math.isnan(pvalue)
+    assert 0.0 <= pvalue <= 1.0

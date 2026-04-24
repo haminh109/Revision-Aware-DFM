@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from realtime_gdp_nowcast.config import load_settings
-from realtime_gdp_nowcast.models.dfm import estimate_monthly_factor, estimate_quarterly_factor
+from realtime_gdp_nowcast.models.dfm import _inverse_psd, estimate_monthly_factor, estimate_quarterly_factor
 
 
 def _synthetic_snapshot() -> pd.DataFrame:
@@ -50,3 +50,10 @@ def test_quarterly_factor_contains_requested_quarter() -> None:
     quarterly = estimate_quarterly_factor(snapshot, "2021Q4", settings)
     assert "2021Q4" in set(quarterly["target_quarter_label"])
     assert np.isfinite(quarterly["factor"]).all()
+
+
+def test_inverse_psd_handles_rank_deficient_matrix() -> None:
+    matrix = np.array([[1.0, 1.0], [1.0, 1.0]])
+    inverse, logdet = _inverse_psd(matrix)
+    assert np.isfinite(inverse).all()
+    assert np.isfinite(logdet)

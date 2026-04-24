@@ -12,18 +12,20 @@ Why:
 Replacement design:
 
 1. Census indicator values remain unchanged and continue to come from ALFRED / FRED.
-2. Census release timing is represented by a proxy availability calendar derived from ALFRED
-   vintage availability dates (`realtime_start`) for the Census-related series already used in the
-   repo.
-3. The proxy preserves daily availability logic but does not claim exact official intraday release
-   timestamps.
-4. `release_time_et` is intentionally left blank for Census proxy events.
+2. Census release timing is represented by a `first-release proxy calendar` derived from the
+   earliest non-missing ALFRED vintage for each observation of the Census-related series already
+   used in the repo.
+3. This is materially stronger than taking the union of all ALFRED availability dates because it
+   separates first releases from later revisions.
+4. Intraday timing is set to a transparent `08:30 ET` source-default assumption for the proxy
+   events.
 
 Proxy artifacts:
 
 - `data/raw/calendars/census/census_proxy_release_events.csv`
 - `data/raw/calendars/census/census_proxy_release_calendar.csv`
 - `data/raw/calendars/census/census_proxy_calendar_metadata.json`
+- `data/interim/census_first_release_proxy_calendar.csv`
 
 Build command:
 

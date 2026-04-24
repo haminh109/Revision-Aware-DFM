@@ -44,6 +44,9 @@ def _release_date_in_month(
     ]
     if candidates.empty:
         return None
+    preferred = candidates[candidates["source_type"].astype(str) != "alfred_vintage_proxy"]
+    if not preferred.empty:
+        candidates = preferred
     return pd.Timestamp(candidates["public_release_timestamp_et"].max())
 
 

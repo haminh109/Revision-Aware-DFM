@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import warnings
 from functools import lru_cache
 
 import numpy as np
@@ -12,6 +13,13 @@ from realtime_gdp_nowcast.data.time import period_to_quarter_label, quarter_labe
 from realtime_gdp_nowcast.features.transforms import apply_transform, expanding_standardize
 
 LOGGER = logging.getLogger(__name__)
+
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    message=".*encountered in matmul.*",
+    module=r"statsmodels\.tsa\.ar_model",
+)
 
 
 def latest_snapshot_values(snapshot_df: pd.DataFrame) -> pd.DataFrame:
@@ -42,7 +50,8 @@ def snapshot_to_monthly_matrix(snapshot_df: pd.DataFrame) -> pd.DataFrame:
         aggfunc="last",
     ).sort_index()
     pivot.index = pd.PeriodIndex(pivot.index, freq="M")
-    return pivot
+    pivot = pivot.apply(pd.to_numeric, errors="coerce")
+    return pivot.replace([np.inf, -np.inf], np.nan)
 
 
 def _ar_impute(series: pd.Series, steps: int, max_lag: int) -> list[float]:
@@ -53,8 +62,11 @@ def _ar_impute(series: pd.Series, steps: int, max_lag: int) -> list[float]:
         return [float(clean.iloc[-1])] * steps
     lag = max(1, min(max_lag, len(clean) // 3))
     try:
-        result = AutoReg(clean, lags=lag, old_names=False).fit()
-        forecast = result.forecast(steps=steps)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            result = AutoReg(clean, lags=lag, old_names=False).fit()
+            forecast = result.forecast(steps=steps)
+        forecast = pd.Series(forecast).replace([np.inf, -np.inf], np.nan).ffill().fillna(float(clean.iloc[-1]))
         return [float(value) for value in forecast]
     except Exception as exc:  # pragma: no cover - fallback path
         LOGGER.debug("AR imputation fallback due to %s", exc)

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from realtime_gdp_nowcast.reporting.submission import _headline_exact_vs_pseudo, _headline_rows
+from realtime_gdp_nowcast.reporting.submission import _filter_forecasts, _headline_exact_vs_pseudo, _headline_rows
 
 
 def test_headline_rows_respect_checkpoint_map() -> None:
@@ -27,3 +27,21 @@ def test_headline_exact_vs_pseudo_builds_gap() -> None:
     ablation = _headline_exact_vs_pseudo(frame)
     assert list(ablation.columns) == ["model_id", "target_id", "checkpoint_id", "exact", "pseudo", "rmse_gap_exact_minus_pseudo"]
     assert round(ablation.loc[0, "rmse_gap_exact_minus_pseudo"], 6) == -0.2
+
+
+def test_filter_forecasts_applies_quarter_bounds_and_exclusions() -> None:
+    frame = pd.DataFrame(
+        [
+            {"target_quarter_label": "2005Q1", "forecast_value": 1.0},
+            {"target_quarter_label": "2008Q4", "forecast_value": 2.0},
+            {"target_quarter_label": "2010Q1", "forecast_value": 3.0},
+            {"target_quarter_label": "2020Q2", "forecast_value": 4.0},
+        ]
+    )
+    filtered = _filter_forecasts(
+        frame,
+        start_quarter="2005Q1",
+        end_quarter="2020Q4",
+        excluded_quarters=["2020Q2"],
+    )
+    assert filtered["target_quarter_label"].tolist() == ["2005Q1", "2008Q4", "2010Q1"]

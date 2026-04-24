@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import warnings
 from dataclasses import dataclass
 
 import numpy as np
@@ -11,6 +12,10 @@ from realtime_gdp_nowcast.data.time import period_to_quarter_label, quarter_labe
 from realtime_gdp_nowcast.features.panel import snapshot_to_monthly_matrix
 
 LOGGER = logging.getLogger(__name__)
+FACTOR_VALUE_CLIP = 12.0
+STATE_VALUE_CLIP = 25.0
+LOADING_VALUE_CLIP = 10.0
+COVARIANCE_VALUE_CLIP = 1_000.0
 
 
 @dataclass(slots=True)
@@ -26,8 +31,46 @@ def _symmetrize(matrix: np.ndarray) -> np.ndarray:
     return 0.5 * (matrix + matrix.T)
 
 
+def _safe_matmul(left: np.ndarray, right: np.ndarray, clip: float) -> np.ndarray:
+    with np.errstate(over="ignore", divide="ignore", invalid="ignore", under="ignore"):
+        product = np.matmul(left, right)
+    product = np.nan_to_num(product, nan=0.0, posinf=clip, neginf=-clip)
+    return np.clip(product, -clip, clip)
+
+
+def _psd_eigendecomposition(matrix: np.ndarray, ridge: float = 1e-6) -> tuple[np.ndarray, np.ndarray]:
+    symmetric = np.asarray(matrix, dtype=float)
+    symmetric = np.nan_to_num(symmetric, nan=0.0, posinf=COVARIANCE_VALUE_CLIP, neginf=-COVARIANCE_VALUE_CLIP)
+    symmetric = np.clip(symmetric, -COVARIANCE_VALUE_CLIP, COVARIANCE_VALUE_CLIP)
+    symmetric = _symmetrize(symmetric)
+    eigenvalues, eigenvectors = np.linalg.eigh(symmetric)
+    eigenvalues = np.clip(np.nan_to_num(eigenvalues, nan=ridge, posinf=ridge, neginf=ridge), ridge, None)
+    return eigenvalues, eigenvectors
+
+
+def _project_psd(matrix: np.ndarray, ridge: float = 1e-6) -> np.ndarray:
+    eigenvalues, eigenvectors = _psd_eigendecomposition(matrix, ridge=ridge)
+    return _symmetrize(_safe_matmul(eigenvectors * eigenvalues, eigenvectors.T, clip=COVARIANCE_VALUE_CLIP))
+
+
+def _inverse_psd(matrix: np.ndarray, ridge: float = 1e-6) -> tuple[np.ndarray, float]:
+    eigenvalues, eigenvectors = _psd_eigendecomposition(matrix, ridge=ridge)
+    inverse = _safe_matmul(eigenvectors * (1.0 / eigenvalues), eigenvectors.T, clip=COVARIANCE_VALUE_CLIP)
+    logdet = float(np.sum(np.log(eigenvalues)))
+    return _symmetrize(inverse), logdet
+
+
+def _sanitize_array(values: np.ndarray | pd.DataFrame | pd.Series, clip: float = FACTOR_VALUE_CLIP) -> np.ndarray:
+    array = np.asarray(values, dtype=float)
+    array = np.where(np.isfinite(array), array, np.nan)
+    finite = np.isfinite(array)
+    if finite.any():
+        array[finite] = np.clip(array[finite], -clip, clip)
+    return array
+
+
 def _standardize_factor(values: np.ndarray) -> np.ndarray:
-    vector = np.asarray(values, dtype=float)
+    vector = _sanitize_array(values)
     finite = np.isfinite(vector)
     if not finite.any():
         return np.zeros_like(vector)
@@ -71,16 +114,32 @@ def _initial_factor(monthly_matrix: pd.DataFrame) -> np.ndarray:
     if filled.empty:
         return np.array([], dtype=float)
     if filled.shape[1] < 2 or filled.shape[0] < 6:
-        return _standardize_factor(filled.mean(axis=1).to_numpy())
+        return _standardize_factor(filled.mean(axis=1).to_numpy(dtype=float))
     centered = filled - filled.mean()
-    _, singular_values, vh = np.linalg.svd(centered.to_numpy(), full_matrices=False)
-    first_component = centered.to_numpy() @ vh[0]
-    if singular_values.size:
-        first_component = first_component / max(float(singular_values[0]), 1e-6)
-    return _standardize_factor(first_component)
+    centered_values = _sanitize_array(centered.to_numpy(dtype=float))
+    if not np.isfinite(centered_values).any():
+        return np.zeros(centered_values.shape[0], dtype=float)
+    try:
+        with warnings.catch_warnings():
+            warnings.filterwarnings("error", category=RuntimeWarning)
+            covariance = _safe_matmul(
+                centered_values.T,
+                centered_values,
+                clip=COVARIANCE_VALUE_CLIP,
+            ) / max(centered_values.shape[0] - 1, 1)
+            eigenvalues, eigenvectors = _psd_eigendecomposition(covariance)
+            lead_index = int(np.argmax(eigenvalues))
+            lead_vector = eigenvectors[:, lead_index]
+            first_component = _safe_matmul(centered_values, lead_vector, clip=STATE_VALUE_CLIP)
+            first_component = first_component / max(float(np.sqrt(eigenvalues[lead_index])), 1e-6)
+        return _standardize_factor(first_component)
+    except Exception:
+        return _standardize_factor(filled.mean(axis=1).to_numpy(dtype=float))
 
 
 def _estimate_measurement_params(y: np.ndarray, factor: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    y = _sanitize_array(y)
+    factor = _standardize_factor(factor)
     n_series = y.shape[1]
     loadings = np.zeros(n_series, dtype=float)
     obs_var = np.ones(n_series, dtype=float)
@@ -102,6 +161,7 @@ def _estimate_measurement_params(y: np.ndarray, factor: np.ndarray) -> tuple[np.
 
 
 def _estimate_state_params(factor: np.ndarray, factor_order: int) -> tuple[np.ndarray, float]:
+    factor = _standardize_factor(factor)
     order = max(1, factor_order)
     if len(factor) <= order + 4:
         params = np.zeros(order, dtype=float)
@@ -124,11 +184,20 @@ def _kalman_smoother(
     ar_params: np.ndarray,
     state_var: float,
 ) -> tuple[np.ndarray, float]:
+    y = _sanitize_array(y)
+    loadings = np.clip(
+        np.nan_to_num(np.asarray(loadings, dtype=float), nan=0.0, posinf=0.0, neginf=0.0),
+        -LOADING_VALUE_CLIP,
+        LOADING_VALUE_CLIP,
+    )
+    obs_var = np.clip(np.nan_to_num(np.asarray(obs_var, dtype=float), nan=1.0, posinf=1.0, neginf=1.0), 1e-4, None)
+    ar_params = _stabilize_ar_params(np.nan_to_num(np.asarray(ar_params, dtype=float), nan=0.0, posinf=0.0, neginf=0.0))
+    state_var = float(max(np.nan_to_num(state_var, nan=0.5, posinf=0.5, neginf=0.5), 1e-4))
     nobs, _ = y.shape
     order = len(ar_params)
     transition = _companion_matrix(ar_params)
     state_cov = np.zeros((order, order), dtype=float)
-    state_cov[0, 0] = max(float(state_var), 1e-4)
+    state_cov[0, 0] = state_var
 
     filtered_state = np.zeros((nobs, order), dtype=float)
     filtered_cov = np.zeros((nobs, order, order), dtype=float)
@@ -144,9 +213,14 @@ def _kalman_smoother(
             state_pred = current_state
             cov_pred = current_cov
         else:
-            state_pred = transition @ filtered_state[index - 1]
-            cov_pred = transition @ filtered_cov[index - 1] @ transition.T + state_cov
-        cov_pred = _symmetrize(cov_pred)
+            state_pred = _safe_matmul(transition, filtered_state[index - 1], clip=STATE_VALUE_CLIP)
+            cov_pred = _safe_matmul(
+                _safe_matmul(transition, filtered_cov[index - 1], clip=COVARIANCE_VALUE_CLIP),
+                transition.T,
+                clip=COVARIANCE_VALUE_CLIP,
+            ) + state_cov
+        state_pred = np.clip(state_pred, -STATE_VALUE_CLIP, STATE_VALUE_CLIP)
+        cov_pred = _project_psd(cov_pred)
         predicted_state[index] = state_pred
         predicted_cov[index] = cov_pred
 
@@ -159,36 +233,73 @@ def _kalman_smoother(
         design = np.zeros((int(mask.sum()), order), dtype=float)
         design[:, 0] = loadings[mask]
         obs_cov = np.diag(obs_var[mask])
-        innovation = y[index, mask] - design @ state_pred
-        forecast_cov = design @ cov_pred @ design.T + obs_cov
-        inv_forecast_cov = np.linalg.pinv(forecast_cov)
-        kalman_gain = cov_pred @ design.T @ inv_forecast_cov
-        state_filt = state_pred + kalman_gain @ innovation
-        cov_filt = cov_pred - kalman_gain @ design @ cov_pred
-        cov_filt = _symmetrize(cov_filt)
+        innovation = y[index, mask] - _safe_matmul(design, state_pred, clip=STATE_VALUE_CLIP)
+        forecast_cov = _project_psd(
+            _safe_matmul(
+                _safe_matmul(design, cov_pred, clip=COVARIANCE_VALUE_CLIP),
+                design.T,
+                clip=COVARIANCE_VALUE_CLIP,
+            )
+            + obs_cov
+        )
+        inv_forecast_cov, logdet = _inverse_psd(forecast_cov)
+        kalman_gain = _safe_matmul(
+            _safe_matmul(cov_pred, design.T, clip=COVARIANCE_VALUE_CLIP),
+            inv_forecast_cov,
+            clip=COVARIANCE_VALUE_CLIP,
+        )
+        state_filt = state_pred + _safe_matmul(kalman_gain, innovation, clip=STATE_VALUE_CLIP)
+        state_filt = np.clip(state_filt, -STATE_VALUE_CLIP, STATE_VALUE_CLIP)
+        cov_filt = cov_pred - _safe_matmul(
+            _safe_matmul(kalman_gain, design, clip=COVARIANCE_VALUE_CLIP),
+            cov_pred,
+            clip=COVARIANCE_VALUE_CLIP,
+        )
+        cov_filt = _project_psd(cov_filt)
         filtered_state[index] = state_filt
         filtered_cov[index] = cov_filt
 
-        sign, logdet = np.linalg.slogdet(forecast_cov)
-        if sign > 0:
-            loglikelihood += -0.5 * (
-                innovation.T @ inv_forecast_cov @ innovation
-                + logdet
-                + len(innovation) * np.log(2.0 * np.pi)
-            )
+        innovation_quadratic = float(
+            np.asarray(
+                _safe_matmul(
+                    _safe_matmul(innovation.T, inv_forecast_cov, clip=COVARIANCE_VALUE_CLIP),
+                    innovation,
+                    clip=COVARIANCE_VALUE_CLIP,
+                )
+            ).squeeze()
+        )
+        loglikelihood += -0.5 * (
+            innovation_quadratic
+            + logdet
+            + len(innovation) * np.log(2.0 * np.pi)
+        )
 
     smoothed_state = filtered_state.copy()
     smoothed_cov = filtered_cov.copy()
     for index in range(nobs - 2, -1, -1):
         next_cov = predicted_cov[index + 1]
-        smoother_gain = filtered_cov[index] @ transition.T @ np.linalg.pinv(next_cov)
-        smoothed_state[index] = filtered_state[index] + smoother_gain @ (
-            smoothed_state[index + 1] - predicted_state[index + 1]
+        inv_next_cov, _ = _inverse_psd(next_cov)
+        smoother_gain = _safe_matmul(
+            _safe_matmul(filtered_cov[index], transition.T, clip=COVARIANCE_VALUE_CLIP),
+            inv_next_cov,
+            clip=COVARIANCE_VALUE_CLIP,
         )
-        smoothed_cov[index] = filtered_cov[index] + smoother_gain @ (
-            smoothed_cov[index + 1] - predicted_cov[index + 1]
-        ) @ smoother_gain.T
-        smoothed_cov[index] = _symmetrize(smoothed_cov[index])
+        smoothed_state[index] = filtered_state[index] + _safe_matmul(
+            smoother_gain,
+            (smoothed_state[index + 1] - predicted_state[index + 1]),
+            clip=STATE_VALUE_CLIP,
+        )
+        smoothed_state[index] = np.clip(smoothed_state[index], -STATE_VALUE_CLIP, STATE_VALUE_CLIP)
+        smoothed_cov[index] = filtered_cov[index] + _safe_matmul(
+            _safe_matmul(
+                smoother_gain,
+                (smoothed_cov[index + 1] - predicted_cov[index + 1]),
+                clip=COVARIANCE_VALUE_CLIP,
+            ),
+            smoother_gain.T,
+            clip=COVARIANCE_VALUE_CLIP,
+        )
+        smoothed_cov[index] = _project_psd(smoothed_cov[index])
 
     return smoothed_state[:, 0], float(loglikelihood)
 
@@ -218,7 +329,7 @@ def estimate_monthly_factor(
         )
 
     monthly_matrix = _expand_monthly_matrix(monthly_matrix, target_quarter_label)
-    y = monthly_matrix.to_numpy(dtype=float)
+    y = _sanitize_array(monthly_matrix.to_numpy(dtype=float))
     factor_order = int(settings.models["standard_dfm"].get("factor_order", 2))
     min_history = int(settings.get("models", "standard_dfm", "factor_min_history_months", default=24))
     em_iterations = int(settings.get("models", "standard_dfm", "factor_em_iterations", default=4))

@@ -1,0 +1,19 @@
+series_id,display_name,source,source_code,block,freq,transform_code,release_calendar_id,revision_tracking,required_in_v1
+PAYEMS,All Employees Total Nonfarm,ALFRED,PAYEMS,labor_activity,M,logdiff_annualized,employment_situation,yes,true
+UNRATE,Unemployment Rate,ALFRED,UNRATE,labor_activity,M,diff,employment_situation,yes,true
+AWHMAN,Average Weekly Hours Manufacturing,ALFRED,AWHMAN,labor_activity,M,diff,employment_situation,yes,true
+INDPRO,Industrial Production Total Index,ALFRED,INDPRO,labor_activity,M,logdiff_annualized,industrial_production_capacity_utilization,yes,true
+TCU,Capacity Utilization Total Industry,ALFRED,TCU,labor_activity,M,diff,industrial_production_capacity_utilization,yes,true
+W875RX1,Real Personal Income Less Transfers,ALFRED,W875RX1,consumption_income,M,logdiff_annualized,personal_income_outlays,yes,true
+RSAFS,Retail and Food Services Sales Total,ALFRED,RSAFS,consumption_income,M,logdiff_annualized,retail_sales,yes,true
+UMCSENT,University of Michigan Consumer Sentiment,ALFRED,UMCSENT,consumption_income,M,diff,currently_unmapped,yes,false
+HOUST,Housing Starts Total New Privately Owned,ALFRED,HOUST,investment_housing,M,logdiff_annualized,housing,yes,true
+PERMIT,New Private Housing Units Authorized,ALFRED,PERMIT,investment_housing,M,logdiff_annualized,housing,yes,true
+DGORDER,Manufacturers New Orders Durable Goods,ALFRED,DGORDER,investment_housing,M,logdiff_annualized,durable_goods,yes,true
+NEWORDER,Manufacturers New Orders Core Capital Goods,ALFRED,NEWORDER,investment_housing,M,logdiff_annualized,durable_goods,yes,true
+BUSINV,Business Inventories,ALFRED,BUSINV,inventories_trade,M,logdiff_annualized,inventories,yes,true
+BOPTEXP,U.S. Goods Exports,ALFRED,BOPTEXP,inventories_trade,M,logdiff_annualized,trade,yes,true
+BOPTIMP,U.S. Goods Imports,ALFRED,BOPTIMP,inventories_trade,M,logdiff_annualized,trade,yes,true
+T10Y3MM,10Y Minus 3M Term Spread Monthly,ALFRED,T10Y3MM,financial_conditions,M,level,currently_unmapped,yes,false
+FEDFUNDS,Effective Federal Funds Rate,ALFRED,FEDFUNDS,financial_conditions,M,level,currently_unmapped,yes,false
+GS10,10-Year Treasury Constant Maturity Rate,ALFRED,GS10,financial_conditions,M,level,currently_unmapped,yes,false
