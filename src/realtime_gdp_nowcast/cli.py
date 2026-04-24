@@ -13,6 +13,7 @@ from realtime_gdp_nowcast.evaluation.run import run as run_evaluation
 from realtime_gdp_nowcast.logging_utils import configure_logging
 from realtime_gdp_nowcast.models import ar, bridge, release_dfm, revision_dfm, standard_dfm
 from realtime_gdp_nowcast.reporting.report import build_report
+from realtime_gdp_nowcast.reporting.submission import build_submission_pack
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ def parse_args() -> argparse.Namespace:
         "run-revision-dfm",
         "evaluate",
         "build-report",
+        "build-submission-pack",
     ]:
         subparsers.add_parser(command)
     return parser.parse_args()
@@ -70,6 +72,8 @@ def main() -> None:
         run_evaluation(settings)
     elif args.command == "build-report":
         build_report(settings)
+    elif args.command == "build-submission-pack":
+        build_submission_pack(settings)
 
 
 if __name__ == "__main__":

@@ -66,3 +66,10 @@ reporting:
     - A
     - S
     - T
+  headline_point_checkpoints:
+    A: pre_advance
+    S: pre_second
+    T: pre_third
+  headline_revision_checkpoints:
+    DELTA_SA: pre_advance
+    DELTA_TS: pre_second
