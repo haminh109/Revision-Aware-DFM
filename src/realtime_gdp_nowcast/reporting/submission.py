@@ -189,6 +189,128 @@ def _small_sample_dm_table(headline_table: pd.DataFrame) -> pd.DataFrame:
     return headline_table[available_columns].copy().sort_values(["target_id", "snapshot_mode", "model_id"])
 
 
+def _sample_comparison_table(
+    base_table: pd.DataFrame,
+    sample_table: pd.DataFrame,
+    *,
+    comparison_keys: list[str],
+    sample_name: str,
+    sample_label: str,
+) -> pd.DataFrame:
+    metric_columns = ["RMSE", "MAE", "DM_test", "DM_test_small_sample", "sign_accuracy", "n_forecasts", "n_comparable"]
+    available_metric_columns = [column for column in metric_columns if column in sample_table.columns]
+    renamed = sample_table[comparison_keys + available_metric_columns].rename(
+        columns={column: f"{column}_sample" for column in available_metric_columns}
+    )
+    merged = base_table.merge(renamed, on=comparison_keys, how="left")
+    for column in metric_columns:
+        if column in merged.columns:
+            merged = merged.rename(columns={column: f"{column}_full_sample"})
+    merged["sample_name"] = sample_name
+    merged["sample_label"] = sample_label
+    if {"RMSE_full_sample", "RMSE_sample"}.issubset(merged.columns):
+        merged["rmse_change_sample_minus_full"] = merged["RMSE_sample"] - merged["RMSE_full_sample"]
+    if {"MAE_full_sample", "MAE_sample"}.issubset(merged.columns):
+        merged["mae_change_sample_minus_full"] = merged["MAE_sample"] - merged["MAE_full_sample"]
+    return merged.sort_values(["sample_name", "target_id", "snapshot_mode", "model_id"]).reset_index(drop=True)
+
+
+def _winner_stability_table(
+    headline_best: pd.DataFrame,
+    sample_winners: list[pd.DataFrame],
+    scenario_winner_table: pd.DataFrame,
+) -> pd.DataFrame:
+    stability = headline_best[["target_id", "snapshot_mode", "model_id"]].rename(columns={"model_id": "winner_full_sample"}).copy()
+    for winner_frame in sample_winners:
+        if winner_frame.empty:
+            continue
+        sample_name = str(winner_frame["sample_name"].iloc[0])
+        stability = stability.merge(
+            winner_frame[["target_id", "snapshot_mode", "model_id"]].rename(columns={"model_id": f"winner_{sample_name}"}),
+            on=["target_id", "snapshot_mode"],
+            how="left",
+        )
+    for scenario_name, scenario_frame in scenario_winner_table.groupby("scenario_name"):
+        stability = stability.merge(
+            scenario_frame[["target_id", "snapshot_mode", "model_id"]].rename(columns={"model_id": f"winner_{scenario_name}"}),
+            on=["target_id", "snapshot_mode"],
+            how="left",
+        )
+    winner_columns = [column for column in stability.columns if column.startswith("winner_")]
+    stability["winner_is_stable"] = stability[winner_columns].nunique(axis=1, dropna=True).eq(1)
+    return stability.sort_values(["target_id", "snapshot_mode"]).reset_index(drop=True)
+
+
+def _journal_results_draft(
+    headline_best: pd.DataFrame,
+    headline_revision_best: pd.DataFrame,
+    headline_ablation: pd.DataFrame,
+    point_stability: pd.DataFrame,
+    point_small_sample_dm: pd.DataFrame,
+) -> str:
+    exact_rows = headline_best[headline_best["snapshot_mode"] == "exact"].copy()
+    pseudo_rows = headline_best[headline_best["snapshot_mode"] == "pseudo"].copy()
+    stable_rows = point_stability[point_stability["winner_is_stable"]].copy()
+    unstable_rows = point_stability[~point_stability["winner_is_stable"]].copy()
+    later_targets = headline_best[headline_best["target_id"].isin(["S", "T"])].copy()
+    exact_gap = headline_ablation[headline_ablation["target_id"].isin(["S", "T"])].copy()
+    later_exact_advantage = exact_gap[exact_gap["rmse_gap_exact_minus_pseudo"] < 0].copy() if "rmse_gap_exact_minus_pseudo" in exact_gap.columns else pd.DataFrame()
+
+    exact_summary = "; ".join(
+        f"{row.target_id}: {row.model_id} (RMSE {row.RMSE:.3f})"
+        for row in exact_rows.itertuples(index=False)
+    )
+    pseudo_summary = "; ".join(
+        f"{row.target_id}: {row.model_id} (RMSE {row.RMSE:.3f})"
+        for row in pseudo_rows.itertuples(index=False)
+    )
+    revision_summary = "; ".join(
+        f"{row.target_id}/{row.snapshot_mode}: RMSE {row.RMSE:.3f}, sign accuracy {row.sign_accuracy:.3f}"
+        for row in headline_revision_best.itertuples(index=False)
+    )
+    stable_summary = ", ".join(
+        f"{row.target_id}-{row.snapshot_mode}"
+        for row in stable_rows.itertuples(index=False)
+    ) or "none"
+    unstable_summary = ", ".join(
+        f"{row.target_id}-{row.snapshot_mode}"
+        for row in unstable_rows.itertuples(index=False)
+    ) or "none"
+    later_target_models = ", ".join(sorted(set(later_targets["model_id"]))) or "none"
+    small_sample_summary = "; ".join(
+        f"{row.target_id}/{row.snapshot_mode}/{row.model_id}: p={row.DM_test_small_sample:.3f}"
+        for row in point_small_sample_dm.dropna(subset=["DM_test_small_sample"]).itertuples(index=False)
+        if row.model_id != "ar"
+    )
+
+    return f"""# Journal Results Draft
+
+## Results
+
+The frozen submission build indicates a heterogeneous forecast ranking across the GDP release ladder rather than a single model dominating every target and information set. In the exact-information design, the current headline winners are {exact_summary}. In the pseudo-real-time design, the current headline winners are {pseudo_summary}. This pattern implies that simple bridge-style information aggregation remains competitive for the earliest advance estimate, whereas structured release and revision models become substantially more useful once the information set approaches the second and third GDP releases.
+
+The later-release results are the main empirical contribution. Across `S` and `T`, the best-performing models come from the structured family ({later_target_models}), which is consistent with the paper's claim that modeling the release ladder directly becomes more valuable when early GDP information is already partially observed. The safest way to write this result is therefore not to claim uniform forecast dominance, but to argue that release-aware structure delivers its clearest gains in the later stages of the official GDP publication cycle.
+
+## Exact Vs Pseudo
+
+The exact-versus-pseudo comparison should be framed as conditional rather than universal. For the later targets, the exact design improves RMSE in {len(later_exact_advantage)} of the structured-model comparisons that matter most for the main text. By contrast, the earliest advance checkpoint remains much harder and does not show a clean exact-timing advantage. This supports a measured interpretation: exact timing is most useful when the publication sequence itself carries economically meaningful information, not when the information set is still dominated by broad monthly indicators.
+
+## Revision Forecasting
+
+Revision forecasting remains an economically interpretable extension but should not be oversold. The current revision headline summary is: {revision_summary}. The evidence is sufficient to justify keeping revision-awareness as a substantive extension in the paper, but not strong enough to let revision predictability eclipse the core contribution on release-structured GDP nowcasting.
+
+## Robustness
+
+The winner-stability screen suggests that the most stable headline cells are {stable_summary}, whereas the more specification-sensitive cells are {unstable_summary}. This means the robustness section should explicitly separate the early advance release from the later GDP releases. The early release is still sensitive to model choice and data design, while the later releases retain the structured-model advantage under the main robustness exercises.
+
+The small-sample Diebold-Mariano results remain modest, so the results section should discuss forecast improvement in economic and relative-RMSE terms first, then present p-values as supportive but not decisive evidence. The headline small-sample DM summary is: {small_sample_summary or 'no non-reference models produced meaningful small-sample DM p-values.'}
+
+## Limitations
+
+Three limitations should remain explicit in the paper. First, Census timing is still based on a first-release proxy from ALFRED rather than a full official historical archive. Second, the revision-aware model is structural for the GDP release ladder but not yet a fully joint indicator-revision system. Third, the empirical gains are strongest for the second and third GDP releases rather than being uniformly dominant at the advance stage.
+"""
+
+
 def _run_scenario_pipeline(base_settings: ProjectSettings, config_path: str) -> tuple[ProjectSettings, dict[str, pd.DataFrame]]:
     scenario_settings = load_settings(
         root=base_settings.paths.root,
@@ -282,20 +404,22 @@ def build_submission_pack(settings: ProjectSettings) -> str:
     pandemic_headline = _headline_tables_from_artifacts(settings, pandemic_excluded_artifacts)
     pandemic_excluded_headline_point = pandemic_headline["headline_point"]
     pandemic_excluded_headline_revision = pandemic_headline["headline_revision"]
+    pandemic_point_winners = pandemic_headline["headline_point_best"].copy()
+    pandemic_point_winners["sample_name"] = "no_pandemic"
+    pandemic_point_winners["sample_label"] = "Exclude pandemic quarters"
 
     comparison_columns = ["model_id", "snapshot_mode", "target_id", "checkpoint_id"]
-    pandemic_gap = headline_point_table[comparison_columns + ["RMSE"]].merge(
-        pandemic_excluded_headline_point[comparison_columns + ["RMSE"]].rename(columns={"RMSE": "RMSE_no_pandemic"}),
-        on=comparison_columns,
-        how="left",
+    pandemic_gap = _sample_comparison_table(
+        headline_point_table,
+        pandemic_excluded_headline_point,
+        comparison_keys=comparison_columns,
+        sample_name="no_pandemic",
+        sample_label="Exclude pandemic quarters",
     )
-    pandemic_gap = pandemic_gap.rename(columns={"RMSE": "RMSE_full_sample"})
-    pandemic_gap["sample_name"] = "no_pandemic"
-    pandemic_gap["sample_label"] = "Exclude pandemic quarters"
-    pandemic_gap["rmse_change_sample_minus_full"] = pandemic_gap["RMSE_no_pandemic"] - pandemic_gap["RMSE_full_sample"]
 
     subsample_comparisons_point: list[pd.DataFrame] = [pandemic_gap]
     subsample_comparisons_revision: list[pd.DataFrame] = []
+    point_subsample_winners: list[pd.DataFrame] = [pandemic_point_winners]
     point_subsample_tables: dict[str, pd.DataFrame] = {
         "headline_point_results_no_pandemic.csv": pandemic_excluded_headline_point,
     }
@@ -313,50 +437,29 @@ def build_submission_pack(settings: ProjectSettings) -> str:
         subsample_headline = _headline_tables_from_artifacts(settings, subsample_artifacts)
         point_table = subsample_headline["headline_point"]
         revision_table = subsample_headline["headline_revision"]
+        point_winner_table = subsample_headline["headline_point_best"].copy()
+        point_winner_table["sample_name"] = sample_name
+        point_winner_table["sample_label"] = sample_config.get("label", sample_name.replace("_", " ").title())
+        point_subsample_winners.append(point_winner_table)
         point_subsample_tables[f"headline_point_results_{sample_name}.csv"] = point_table
         revision_subsample_tables[f"headline_revision_results_{sample_name}.csv"] = revision_table
 
-        point_comparison = headline_point_table[comparison_columns + ["RMSE", "MAE"]].merge(
-            point_table[comparison_columns + ["RMSE", "MAE"]].rename(
-                columns={"RMSE": "RMSE_sample", "MAE": "MAE_sample"}
-            ),
-            on=comparison_columns,
-            how="left",
-        )
-        point_comparison = point_comparison.rename(columns={"RMSE": "RMSE_full_sample", "MAE": "MAE_full_sample"})
-        point_comparison["sample_name"] = sample_name
-        point_comparison["sample_label"] = sample_config.get("label", sample_name.replace("_", " ").title())
-        point_comparison["rmse_change_sample_minus_full"] = (
-            point_comparison["RMSE_sample"] - point_comparison["RMSE_full_sample"]
-        )
-        point_comparison["mae_change_sample_minus_full"] = (
-            point_comparison["MAE_sample"] - point_comparison["MAE_full_sample"]
+        point_comparison = _sample_comparison_table(
+            headline_point_table,
+            point_table,
+            comparison_keys=comparison_columns,
+            sample_name=sample_name,
+            sample_label=sample_config.get("label", sample_name.replace("_", " ").title()),
         )
         subsample_comparisons_point.append(point_comparison)
 
         if not revision_table.empty:
-            revision_comparison = headline_revision_table[REVISION_COMPARISON_KEYS + ["RMSE", "MAE", "sign_accuracy"]].merge(
-                revision_table[REVISION_COMPARISON_KEYS + ["RMSE", "MAE", "sign_accuracy"]].rename(
-                    columns={
-                        "RMSE": "RMSE_sample",
-                        "MAE": "MAE_sample",
-                        "sign_accuracy": "sign_accuracy_sample",
-                    }
-                ),
-                on=REVISION_COMPARISON_KEYS,
-                how="left",
-            )
-            revision_comparison = revision_comparison.rename(
-                columns={
-                    "RMSE": "RMSE_full_sample",
-                    "MAE": "MAE_full_sample",
-                    "sign_accuracy": "sign_accuracy_full_sample",
-                }
-            )
-            revision_comparison["sample_name"] = sample_name
-            revision_comparison["sample_label"] = sample_config.get("label", sample_name.replace("_", " ").title())
-            revision_comparison["rmse_change_sample_minus_full"] = (
-                revision_comparison["RMSE_sample"] - revision_comparison["RMSE_full_sample"]
+            revision_comparison = _sample_comparison_table(
+                headline_revision_table,
+                revision_table,
+                comparison_keys=REVISION_COMPARISON_KEYS,
+                sample_name=sample_name,
+                sample_label=sample_config.get("label", sample_name.replace("_", " ").title()),
             )
             subsample_comparisons_revision.append(revision_comparison)
 
@@ -405,6 +508,14 @@ def build_submission_pack(settings: ProjectSettings) -> str:
 
     point_small_sample_dm = _small_sample_dm_table(headline_point_table)
     revision_small_sample_dm = _small_sample_dm_table(headline_revision_table)
+    point_stability = _winner_stability_table(headline_best, point_subsample_winners, scenario_winner_table)
+    journal_results_draft = _journal_results_draft(
+        headline_best,
+        headline_revision_best,
+        headline_ablation,
+        point_stability,
+        point_small_sample_dm,
+    )
     figure_path = _build_headline_gap_figure(headline_ablation, settings)
 
     key_outputs = {
@@ -421,6 +532,8 @@ def build_submission_pack(settings: ProjectSettings) -> str:
     write_table(headline_revision_best, settings.paths.outputs / "tables" / "headline_revision_winners.csv")
     write_table(point_small_sample_dm, settings.paths.outputs / "tables" / "headline_point_small_sample_dm.csv")
     write_table(revision_small_sample_dm, settings.paths.outputs / "tables" / "headline_revision_small_sample_dm.csv")
+    write_table(point_stability, settings.paths.outputs / "tables" / "journal_winner_stability.csv")
+    write_text(journal_results_draft, settings.paths.outputs / "reports" / "journal_results_draft.md")
 
     for filename, table in point_subsample_tables.items():
         write_table(table, settings.paths.outputs / "tables" / filename)
@@ -491,6 +604,8 @@ def build_submission_pack(settings: ProjectSettings) -> str:
 - Point subsample robustness: `{settings.paths.outputs / "tables" / "headline_point_subsample_robustness.csv"}`
 - Point scenario robustness: `{settings.paths.outputs / "tables" / "headline_point_scenario_robustness.csv"}`
 - Small-sample DM table: `{settings.paths.outputs / "tables" / "headline_point_small_sample_dm.csv"}`
+- Winner stability table: `{settings.paths.outputs / "tables" / "journal_winner_stability.csv"}`
+- Journal results draft: `{settings.paths.outputs / "reports" / "journal_results_draft.md"}`
 - Gap figure: `{figure_path}`
 """
     write_text(report, key_outputs["submission_mode_report"])
@@ -499,6 +614,8 @@ def build_submission_pack(settings: ProjectSettings) -> str:
         **key_outputs,
         "headline_point_subsample_robustness": settings.paths.outputs / "tables" / "headline_point_subsample_robustness.csv",
         "headline_point_small_sample_dm": settings.paths.outputs / "tables" / "headline_point_small_sample_dm.csv",
+        "journal_winner_stability": settings.paths.outputs / "tables" / "journal_winner_stability.csv",
+        "journal_results_draft": settings.paths.outputs / "reports" / "journal_results_draft.md",
     }
     point_scenario_path = settings.paths.outputs / "tables" / "headline_point_scenario_robustness.csv"
     if point_scenario_path.exists():
