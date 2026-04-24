@@ -113,7 +113,7 @@ def build_report(settings: ProjectSettings) -> str:
 ## Notes
 
 - `release_dfm` is the first structured benchmark to check against the simpler baselines.
-- `revision_dfm` currently implements a practical latent-state approximation that is easy to extend toward a stricter measurement-error state-space version later.
+- `revision_dfm` now runs as a structural latent-state state-space model for the GDP release ladder, with run diagnostics available in `outputs/diagnostics/revision_dfm_diagnostics.parquet`.
 - Full diagnostic tables remain available in `outputs/tables/point_forecast_table.csv` and `outputs/tables/revision_forecast_table.csv`.
 """
     write_text(report, settings.paths.outputs / "reports" / "paper_draft_report.md")

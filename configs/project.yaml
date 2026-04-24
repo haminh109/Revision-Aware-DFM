@@ -59,6 +59,7 @@ models:
     factor_order: 2
   revision_dfm:
     state_ar_order: 1
+    maxiter: 100
 
 reporting:
   benchmark_reference_model: ar
