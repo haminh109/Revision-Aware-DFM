@@ -1,0 +1,68 @@
+project:
+  name: release_structured_revision_aware_nowcast
+  timezone: America/New_York
+  gdp_release_proxy_series_id: GDPC1
+  gdp_growth_proxy_series_id: A191RL1Q225SBEA
+  report_recent_quarter: 2024Q4
+
+paths:
+  root: .
+  raw_data: data/raw
+  bronze_data: data/bronze
+  silver_data: data/silver
+  interim_data: data/interim
+  processed_data: data/processed
+  outputs: outputs
+  docs: docs
+  series_catalog: configs/series_catalog.csv
+  target_catalog: configs/target_catalog.csv
+
+sample:
+  ingest_start: 1992-01-01
+  burn_in_start_quarter: 1995Q1
+  backtest_start_quarter: 2005Q1
+  backtest_end_quarter: 2024Q4
+  pandemic_quarters:
+    - 2020Q2
+    - 2020Q3
+
+checkpoints:
+  - checkpoint_id: m1_end
+    label: M1 end
+  - checkpoint_id: m2_labor
+    label: M2 after labor releases
+  - checkpoint_id: m3_spending_trade_inventories
+    label: M3 after spending/trade/inventories
+  - checkpoint_id: pre_advance
+    label: Day before advance GDP
+  - checkpoint_id: pre_second
+    label: Day before second GDP
+  - checkpoint_id: pre_third
+    label: Day before third GDP
+
+download:
+  validate_existing_raw_only: true
+
+models:
+  ar:
+    min_lag: 1
+    max_lag: 4
+    ic: bic
+  bridge:
+    min_history_quarters: 24
+  standard_dfm:
+    k_factors: 1
+    factor_order: 2
+    monthly_imputation_max_lag: 6
+  release_dfm:
+    k_factors: 1
+    factor_order: 2
+  revision_dfm:
+    state_ar_order: 1
+
+reporting:
+  benchmark_reference_model: ar
+  main_text_targets:
+    - A
+    - S
+    - T

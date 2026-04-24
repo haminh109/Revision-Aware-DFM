@@ -1,0 +1,8 @@
+target_id,display_name,source_table,release_round,maturity_rule,is_main_text_target
+A,Advance GDP Release,silver_gdp_release_stage,advance,official_release,true
+S,Second GDP Release,silver_gdp_release_stage,second,official_release,true
+T,Third GDP Release,silver_gdp_release_stage,third,official_release,true
+M,Mature GDP Target,silver_gdp_complete_vintages,mature,12_quarter_later,false
+DELTA_SA,Revision Second Minus Advance,derived,revision,second_minus_advance,false
+DELTA_TS,Revision Third Minus Second,derived,revision,third_minus_second,false
+DELTA_MT,Revision Mature Minus Third,derived,revision,mature_minus_third,false
