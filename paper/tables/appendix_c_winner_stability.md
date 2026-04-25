@@ -1,0 +1,14 @@
+# Appendix Table C1. Winner Stability Across Robustness Checks
+
+Source: `outputs/frozen/submission_final/journal_winner_stability.csv`.
+
+Note: Winner instability motivates the paper's model-family claim rather than an unconditional single-model dominance claim.
+
+| target_id | snapshot_mode | winner_full_sample | winner_no_pandemic | winner_pre_gfc | winner_post_gfc | winner_alternative_data_choice | winner_expanded_panel | winner_is_stable |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A | exact | bridge | bridge | release_dfm | bridge | bridge | standard_dfm | False |
+| A | pseudo | standard_dfm | ar | release_dfm | standard_dfm | standard_dfm | standard_dfm | False |
+| S | exact | release_dfm | release_dfm | release_dfm | release_dfm | release_dfm | revision_dfm | False |
+| S | pseudo | revision_dfm | release_dfm | release_dfm | revision_dfm | revision_dfm | release_dfm | False |
+| T | exact | revision_dfm | revision_dfm | release_dfm | revision_dfm | revision_dfm | release_dfm | False |
+| T | pseudo | revision_dfm | revision_dfm | release_dfm | revision_dfm | release_dfm | release_dfm | False |

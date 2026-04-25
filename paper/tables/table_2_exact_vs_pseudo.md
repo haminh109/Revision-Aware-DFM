@@ -1,0 +1,23 @@
+# Table 2. Exact-vs-Pseudo Real-Time Timing Comparison
+
+Source: `outputs/frozen/submission_final/headline_exact_vs_pseudo.csv`.
+
+Note: Negative exact-minus-pseudo values indicate lower RMSE under exact event-time snapshots.
+
+| target_id | checkpoint_id | model_id | exact | pseudo | rmse_gap_exact_minus_pseudo |
+| --- | --- | --- | --- | --- | --- |
+| A | pre_advance | ar | 7.201 | 7.201 | 0.0 |
+| A | pre_advance | bridge | 5.151 | 5.121 | 0.03 |
+| A | pre_advance | release_dfm | 7.379 | 7.363 | 0.016 |
+| A | pre_advance | revision_dfm | 7.309 | 7.294 | 0.015 |
+| A | pre_advance | standard_dfm | 5.21 | 5.065 | 0.144 |
+| S | pre_second | ar | 7.007 | 7.007 | 0.0 |
+| S | pre_second | bridge | 4.996 | 5.122 | -0.126 |
+| S | pre_second | release_dfm | 0.669 | 0.668 | 0.0 |
+| S | pre_second | revision_dfm | 0.671 | 0.667 | 0.005 |
+| S | pre_second | standard_dfm | 5.17 | 5.206 | -0.036 |
+| T | pre_third | ar | 6.906 | 6.906 | 0.0 |
+| T | pre_third | bridge | 5.051 | 5.037 | 0.014 |
+| T | pre_third | release_dfm | 0.37 | 0.392 | -0.023 |
+| T | pre_third | revision_dfm | 0.364 | 0.388 | -0.024 |
+| T | pre_third | standard_dfm | 5.17 | 5.172 | -0.001 |
