@@ -5,3 +5,8 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 data/bronze/indicators/alfred_monthly_long.csv
+/outputs/
+/logs/
+.pytest_cache/
+.ruff_cache/
+dist/

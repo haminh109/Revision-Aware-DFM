@@ -1,0 +1,12 @@
+{
+  "source_series_id":"GDPC1",
+  "source_file":"data\/bronze\/indicators\/alfred_monthly_long.csv",
+  "output_file":"data\/silver\/calendars\/gdp_release_calendar_alfred.csv",
+  "n_quarters":240,
+  "n_rows":960,
+  "n_vintage_derived":641,
+  "n_approximate":319,
+  "min_target_quarter":"1965:Q3",
+  "max_target_quarter":"2025:Q2",
+  "release_time_convention_et":"08:30"
+}

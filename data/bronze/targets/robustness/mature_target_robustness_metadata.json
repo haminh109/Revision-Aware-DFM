@@ -1,0 +1,16 @@
+{
+  "created_by": "scripts/11_build_mature_target_robustness_panels.py",
+  "release_targets_source": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/full_state/data/bronze/targets/gdp_release_targets.csv",
+  "complete_vintages_source": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/full_state/data/bronze/targets/gdp_complete_vintages_long.csv",
+  "outputs": {
+    "mature_1y": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/full_state/data/bronze/targets/robustness/gdp_release_targets_mature_1y.csv",
+    "mature_3y": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/full_state/data/bronze/targets/robustness/gdp_release_targets_mature_3y.csv",
+    "mature_latest": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/full_state/data/bronze/targets/robustness/gdp_release_targets_mature_latest.csv"
+  },
+  "rules": {
+    "mature_1y": "first complete-vintage GDP growth estimate at least 4 quarters after target quarter",
+    "mature_3y": "first complete-vintage GDP growth estimate at least 12 quarters after target quarter",
+    "mature_latest": "latest complete-vintage GDP growth estimate available in the complete-vintage workbook"
+  },
+  "important_note": "These robustness panels derive mature targets from complete-vintage level-like RTDSM values. They should be used as mature-target sensitivity checks, not as replacements for official A/S/T release-stage targets."
+}

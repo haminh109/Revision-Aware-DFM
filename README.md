@@ -249,3 +249,49 @@ Implement the Stage 1 scripts in this order:
 2. `02_parse_rtdsm_complete_vintages.py`
 3. `03_parse_alfred_monthly.py`
 4. `04_build_release_calendar_master.py`
+
+---
+
+## Journal-version modeling groundwork
+
+The folder `full_state_space_release_revision_dfm/` contains the upgraded modeling groundwork for a later journal version:
+
+- full Kalman filter, Rauch--Tung--Striebel smoother, and EM estimation;
+- joint GDP release ladder `A/S/T/M` state-space model;
+- GDP revision state;
+- monthly indicator first-vintage versus mature-vintage revision state;
+- an `indicator_revision_only_dfm_kalman_em` ablation to separate indicator-revision gains from GDP-revision gains;
+- model-implied state-space forecast variances for Kalman/EM rows;
+- density forecast utilities for intervals, log score, CRPS, and coverage;
+- synthetic and bronze-data smoke examples;
+- an expanding-window `prototype_quarterly` backtest runner that writes point/revision forecast CSVs and metrics under `outputs/full_state_space_release_revision_dfm/`.
+- an `exact_pseudo_backtest` runner that compares `ar`, `bridge`, `standard_dfm`, `release_dfm`, `revision_dfm_kalman_em`, `indicator_revision_only_dfm_kalman_em`, and `joint_indicator_revision_dfm_full_kalman_em` on the same release-checkpoint origins.
+- a `build_report_package` utility that converts exact/pseudo backtest outputs into report-ready CSV tables, robustness summaries, LaTeX snippets, figures, a manifest, and `journal_results_draft.md`.
+- a `build_journal_evidence_package` utility that adds HAC DM tests, Clark-West-style diagnostics, model-confidence-set proxy tables, block-bootstrap MCS-style tables, model-implied or residual-calibrated density scores, cumulative loss tables, and data audit outputs.
+- a mature-target robustness builder that creates `M_1y`, `M_3y`, and `M_latest` target panels.
+- a convergence stability builder for comparing multiple `max_iter` runs.
+- a variance audit builder for predictive variance, interval coverage, symmetry, and positive-semidefinite covariance checks.
+- a multi-initialization audit runner for EM local-solution sensitivity.
+- a journal-candidate orchestration script that builds backtests, report packages, evidence packages, variance audits, robustness runs, convergence stability, and a frozen manifest.
+
+The full-state-space model is now wired into the exact/pseudo backtest. A report should use one frozen exact/pseudo build plus its generated report package as the source of truth.
+
+Useful commands:
+
+```bash
+python -m full_state_space_release_revision_dfm.run_smoke_tests
+python -m full_state_space_release_revision_dfm.example_bronze_smoke
+python -m full_state_space_release_revision_dfm.prototype_quarterly_backtest --max-origins 6 --max-iter 6
+python scripts/10_build_gdp_release_calendar_from_alfred.py
+python -m full_state_space_release_revision_dfm.exact_pseudo_backtest --max-origins 6 --max-iter 3
+python -m full_state_space_release_revision_dfm.exact_pseudo_backtest --max-origins 0 --max-iter 10
+python scripts/11_build_mature_target_robustness_panels.py
+python -m full_state_space_release_revision_dfm.build_report_package
+python -m full_state_space_release_revision_dfm.build_journal_evidence_package
+python -m full_state_space_release_revision_dfm.build_variance_audit
+python -m full_state_space_release_revision_dfm.build_convergence_stability_table
+python -m full_state_space_release_revision_dfm.run_initialization_audit --max-origins 12 --max-iter 50
+python scripts/12_run_journal_candidate_pipeline.py --max-iters 50 100 --max-origins 0 --mcs-bootstrap-reps 1000 --mature-max-iter 50 --run-initialization-audit
+```
+
+For a journal-style freeze, prefer the full-sample high-iteration run, then build both the report package and the journal evidence package. The package uses `forecast_error = forecast_value - realized_value`, so reported bias is mean forecast minus realized value.
