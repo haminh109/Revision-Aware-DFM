@@ -1,0 +1,119 @@
+{
+  "generated_utc": "2026-04-26T16:30:56+00:00",
+  "repo_root": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project",
+  "git": {
+    "is_git_repo": false,
+    "commit_hash": "",
+    "status_short": "",
+    "dirty": false
+  },
+  "max_iters": [
+    50,
+    100
+  ],
+  "max_origins": 0,
+  "n_factors": 1,
+  "midas_lags": 6,
+  "estimation_window": "expanding",
+  "rolling_window_quarters": 40,
+  "exclude_quarters": [],
+  "parallel_jobs": 4,
+  "spf_forecasts": "data/external/spf/spf_rgdp_growth_benchmark.csv",
+  "build_public_spf": false,
+  "mcs_bootstrap_reps": 5000,
+  "runs": {
+    "exact_pseudo_backtest_max_iter50": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter50",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter50_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter50_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter50_variance_audit",
+      "max_iter": "50",
+      "n_factors": "1",
+      "midas_lags": "6",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": "",
+      "parallel_jobs": "4"
+    },
+    "exact_pseudo_backtest_max_iter100": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter100",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter100_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter100_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter100_variance_audit",
+      "max_iter": "100",
+      "n_factors": "1",
+      "midas_lags": "6",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": "",
+      "parallel_jobs": "4"
+    }
+  },
+  "mature_robustness_runs": {
+    "mature_1y": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_1y_max_iter100",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_1y_max_iter100_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_1y_max_iter100_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_1y_max_iter100_variance_audit",
+      "max_iter": "100",
+      "n_factors": "1",
+      "midas_lags": "6",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": "",
+      "parallel_jobs": "4"
+    },
+    "mature_3y": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_3y_max_iter100",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_3y_max_iter100_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_3y_max_iter100_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_3y_max_iter100_variance_audit",
+      "max_iter": "100",
+      "n_factors": "1",
+      "midas_lags": "6",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": "",
+      "parallel_jobs": "4"
+    },
+    "mature_latest": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_latest_max_iter100",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_latest_max_iter100_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_latest_max_iter100_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_mature_latest_max_iter100_variance_audit",
+      "max_iter": "100",
+      "n_factors": "1",
+      "midas_lags": "6",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": "",
+      "parallel_jobs": "4"
+    }
+  },
+  "convergence_stability": "outputs/full_state_space_release_revision_dfm/convergence_stability_journal_candidate",
+  "initialization_audit": "outputs/full_state_space_release_revision_dfm/initialization_audit_journal_candidate",
+  "copied_freeze_artifacts": {
+    "runs/exact_pseudo_backtest_max_iter50/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter50/run_dir",
+    "runs/exact_pseudo_backtest_max_iter50/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter50/report_dir",
+    "runs/exact_pseudo_backtest_max_iter50/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter50/evidence_dir",
+    "runs/exact_pseudo_backtest_max_iter50/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter50/variance_dir",
+    "runs/exact_pseudo_backtest_max_iter100/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter100/run_dir",
+    "runs/exact_pseudo_backtest_max_iter100/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter100/report_dir",
+    "runs/exact_pseudo_backtest_max_iter100/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter100/evidence_dir",
+    "runs/exact_pseudo_backtest_max_iter100/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/runs/exact_pseudo_backtest_max_iter100/variance_dir",
+    "mature_robustness_runs/mature_1y/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_1y/run_dir",
+    "mature_robustness_runs/mature_1y/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_1y/report_dir",
+    "mature_robustness_runs/mature_1y/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_1y/evidence_dir",
+    "mature_robustness_runs/mature_1y/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_1y/variance_dir",
+    "mature_robustness_runs/mature_3y/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_3y/run_dir",
+    "mature_robustness_runs/mature_3y/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_3y/report_dir",
+    "mature_robustness_runs/mature_3y/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_3y/evidence_dir",
+    "mature_robustness_runs/mature_3y/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_3y/variance_dir",
+    "mature_robustness_runs/mature_latest/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_latest/run_dir",
+    "mature_robustness_runs/mature_latest/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_latest/report_dir",
+    "mature_robustness_runs/mature_latest/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_latest/evidence_dir",
+    "mature_robustness_runs/mature_latest/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/mature_robustness_runs/mature_latest/variance_dir",
+    "convergence_stability": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/convergence_stability",
+    "initialization_audit": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_core/initialization_audit"
+  }
+}

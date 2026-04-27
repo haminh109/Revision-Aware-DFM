@@ -1,0 +1,7 @@
+timing_mode,checkpoint_id,revision_target_id,winner_models,winner_RMSE,n_forecasts
+exact,pre_advance,DELTA_SA,no_revision; indicator_revision_only_dfm_kalman_em,0.5696627235545563,79
+exact,pre_second,DELTA_TS,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,79
+exact,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.338732745080212,80
+pseudo,pre_advance,DELTA_SA,no_revision; indicator_revision_only_dfm_kalman_em,0.5696627235545563,79
+pseudo,pre_second,DELTA_TS,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,79
+pseudo,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.338732745080212,80

@@ -1,0 +1,19 @@
+table,target_id,subsample,n_cells,structured_family_cells,structured_family_share,distinct_winning_models,revision_target_id
+point,A,exclude_pandemic,2,2,1.0,joint_indicator_revision_dfm_full_kalman_em,
+point,A,full_sample,2,2,1.0,joint_indicator_revision_dfm_full_kalman_em,
+point,A,post_pandemic,2,2,1.0,joint_indicator_revision_dfm_full_kalman_em,
+point,S,exclude_pandemic,2,0,0.0,no_revision; bridge,
+point,S,full_sample,2,0,0.0,no_revision; bridge,
+point,S,post_pandemic,2,0,0.0,no_revision; bridge,
+point,T,exclude_pandemic,2,2,1.0,release_dfm,
+point,T,full_sample,2,2,1.0,release_dfm,
+point,T,post_pandemic,2,2,1.0,release_dfm,
+revision,,exclude_pandemic,2,0,0.0,no_revision; spf; indicator_revision_only_dfm_kalman_em,DELTA_MT
+revision,,full_sample,2,0,0.0,no_revision; spf; indicator_revision_only_dfm_kalman_em,DELTA_MT
+revision,,post_pandemic,2,0,0.0,no_revision; spf; indicator_revision_only_dfm_kalman_em,DELTA_MT
+revision,,exclude_pandemic,2,0,0.0,no_revision; spf; indicator_revision_only_dfm_kalman_em,DELTA_SA
+revision,,full_sample,2,0,0.0,no_revision; spf; indicator_revision_only_dfm_kalman_em,DELTA_SA
+revision,,post_pandemic,2,0,0.0,no_revision; spf; indicator_revision_only_dfm_kalman_em,DELTA_SA
+revision,,exclude_pandemic,2,0,0.0,ar,DELTA_TS
+revision,,full_sample,2,0,0.0,ar,DELTA_TS
+revision,,post_pandemic,2,0,0.0,ar,DELTA_TS

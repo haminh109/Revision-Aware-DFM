@@ -1,0 +1,44 @@
+{
+  "generated_utc": "2026-04-26T11:09:15+00:00",
+  "repo_root": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project",
+  "git": {
+    "is_git_repo": false,
+    "commit_hash": "",
+    "status_short": "",
+    "dirty": false
+  },
+  "max_iters": [
+    1
+  ],
+  "max_origins": 1,
+  "n_factors": 1,
+  "midas_lags": 6,
+  "estimation_window": "expanding",
+  "rolling_window_quarters": 40,
+  "exclude_quarters": [],
+  "spf_forecasts": "data/external/spf/spf_rgdp_growth_benchmark.csv",
+  "build_public_spf": false,
+  "mcs_bootstrap_reps": 10,
+  "runs": {
+    "exact_pseudo_backtest_max_iter1": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_variance_audit",
+      "max_iter": "1",
+      "n_factors": "1",
+      "midas_lags": "6",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": ""
+    }
+  },
+  "convergence_stability": "outputs/full_state_space_release_revision_dfm/convergence_stability_journal_candidate",
+  "copied_freeze_artifacts": {
+    "runs/exact_pseudo_backtest_max_iter1/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_validation_smoke/runs/exact_pseudo_backtest_max_iter1/run_dir",
+    "runs/exact_pseudo_backtest_max_iter1/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_validation_smoke/runs/exact_pseudo_backtest_max_iter1/report_dir",
+    "runs/exact_pseudo_backtest_max_iter1/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_validation_smoke/runs/exact_pseudo_backtest_max_iter1/evidence_dir",
+    "runs/exact_pseudo_backtest_max_iter1/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_validation_smoke/runs/exact_pseudo_backtest_max_iter1/variance_dir",
+    "convergence_stability": "outputs/full_state_space_release_revision_dfm/frozen/q1_validation_smoke/convergence_stability"
+  }
+}

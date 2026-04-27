@@ -1,0 +1,7 @@
+timing_mode,checkpoint_id,target_id,best_models,best_RMSE,best_MAE,best_bias,best_relative_RMSFE,best_DM_test,best_sign_accuracy,best_n_forecasts,n_models_compared,structured_family_win
+exact,pre_advance,A,ar,0.2893596215441562,0.2871899419032215,-0.0353684584029549,1.0,1.0,1.0,2,11,False
+exact,pre_second,S,no_revision,0.0666882673339172,0.05135,-0.05135,0.2759191830715407,,1.0,2,11,False
+exact,pre_third,T,release_dfm,0.105338560134863,0.0901254276508023,-0.0901254276508023,0.3209737909855588,,1.0,2,11,True
+pseudo,pre_advance,A,ar,0.2893596215441562,0.2871899419032215,-0.0353684584029549,1.0,1.0,1.0,2,11,False
+pseudo,pre_second,S,no_revision,0.0666882673339172,0.05135,-0.05135,0.2759191830715407,,1.0,2,11,False
+pseudo,pre_third,T,release_dfm,0.1053829061665637,0.0900896870148737,-0.0900896870148737,0.3211089163745135,,1.0,2,11,True

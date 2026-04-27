@@ -1,0 +1,22 @@
+{
+  "generated_utc": "2026-04-26T16:30:45+00:00",
+  "repo_root": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project",
+  "output_root": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/initialization_audit_parallel_validation",
+  "seeds": [
+    1
+  ],
+  "max_iter": 1,
+  "max_origins": 2,
+  "initialization_jitter": 0.02,
+  "eval_start": "2005:Q1",
+  "eval_end": "2024:Q4",
+  "gdp_release_targets": "",
+  "parallel_jobs": 4,
+  "output_files": {
+    "initialization_point_runs": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/initialization_audit_parallel_validation/initialization_point_runs.csv",
+    "initialization_revision_runs": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/initialization_audit_parallel_validation/initialization_revision_runs.csv",
+    "initialization_point_stability": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/initialization_audit_parallel_validation/initialization_point_stability.csv",
+    "initialization_revision_stability": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/initialization_audit_parallel_validation/initialization_revision_stability.csv",
+    "manifest": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/initialization_audit_parallel_validation/manifest.json"
+  }
+}

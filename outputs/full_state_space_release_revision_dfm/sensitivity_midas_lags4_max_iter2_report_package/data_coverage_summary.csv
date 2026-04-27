@@ -1,0 +1,21 @@
+coverage_item,value
+source_dir,/Users/haaminh109/Desktop/Minh/Tài liệu học tập (DSEB)/Kì 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags4_max_iter2
+point_forecast_rows,264
+revision_forecast_rows,264
+failure_rows,0
+calendar_rows,960
+calendar_status::derived_from_alfred_gdpc1_vintage_date,641
+calendar_status::fallback_deterministic_month_end,319
+headline_A_S_T_calendar_status::derived_from_alfred_gdpc1_vintage_date,240
+point_coverage::exact::pre_advance::A,4
+point_coverage::exact::pre_second::S,4
+point_coverage::exact::pre_third::T,4
+point_coverage::pseudo::pre_advance::A,4
+point_coverage::pseudo::pre_second::S,4
+point_coverage::pseudo::pre_third::T,4
+revision_coverage::exact::pre_advance::DELTA_SA,4
+revision_coverage::exact::pre_second::DELTA_TS,4
+revision_coverage::exact::pre_third::DELTA_MT,4
+revision_coverage::pseudo::pre_advance::DELTA_SA,4
+revision_coverage::pseudo::pre_second::DELTA_TS,4
+revision_coverage::pseudo::pre_third::DELTA_MT,4

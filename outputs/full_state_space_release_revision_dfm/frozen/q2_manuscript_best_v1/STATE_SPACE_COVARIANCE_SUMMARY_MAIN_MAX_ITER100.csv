@@ -1,0 +1,5 @@
+model_id,rows,min_share_psd,min_min_eigenvalue,max_asymmetry
+indicator_revision_only_dfm_kalman_em,6,1.0,0.0261352199757632,0.0
+joint_indicator_revision_dfm_full_kalman_em,6,1.0,0.0289050359154636,8.881784197001252e-16
+monthly_mixed_frequency_kalman_em,6,1.0,0.0573081075232197,1.7763568394002505e-15
+revision_dfm_kalman_em,6,1.0,0.0406443392160855,1.7763568394002505e-15

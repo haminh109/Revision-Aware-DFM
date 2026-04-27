@@ -1,0 +1,64 @@
+{
+  "generated_utc": "2026-04-26T21:34:12+00:00",
+  "repo_root": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project",
+  "git": {
+    "is_git_repo": false,
+    "commit_hash": "",
+    "status_short": "",
+    "dirty": false
+  },
+  "max_iters": [
+    100
+  ],
+  "max_origins": 0,
+  "n_factors": 1,
+  "midas_lags": 6,
+  "estimation_window": "expanding",
+  "rolling_window_quarters": 40,
+  "exclude_quarters": [],
+  "parallel_jobs": 4,
+  "spf_forecasts": "data/external/spf/spf_rgdp_growth_benchmark.csv",
+  "build_public_spf": false,
+  "mcs_bootstrap_reps": 1000,
+  "runs": {},
+  "sensitivity_runs": {
+    "sensitivity_midas_lags4_max_iter100": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags4_max_iter100",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags4_max_iter100_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags4_max_iter100_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags4_max_iter100_variance_audit",
+      "max_iter": "100",
+      "n_factors": "1",
+      "midas_lags": "4",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": "",
+      "parallel_jobs": "4"
+    },
+    "sensitivity_midas_lags9_max_iter100": {
+      "run_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags9_max_iter100",
+      "report_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags9_max_iter100_report_package",
+      "evidence_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags9_max_iter100_journal_evidence",
+      "variance_dir": "outputs/full_state_space_release_revision_dfm/sensitivity_midas_lags9_max_iter100_variance_audit",
+      "max_iter": "100",
+      "n_factors": "1",
+      "midas_lags": "9",
+      "estimation_window": "expanding",
+      "rolling_window_quarters": "40",
+      "exclude_quarters": "",
+      "parallel_jobs": "4"
+    }
+  },
+  "convergence_stability": "outputs/full_state_space_release_revision_dfm/convergence_stability_journal_candidate",
+  "copied_freeze_artifacts": {
+    "sensitivity_runs/sensitivity_midas_lags4_max_iter100/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags4_max_iter100/run_dir",
+    "sensitivity_runs/sensitivity_midas_lags4_max_iter100/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags4_max_iter100/report_dir",
+    "sensitivity_runs/sensitivity_midas_lags4_max_iter100/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags4_max_iter100/evidence_dir",
+    "sensitivity_runs/sensitivity_midas_lags4_max_iter100/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags4_max_iter100/variance_dir",
+    "sensitivity_runs/sensitivity_midas_lags9_max_iter100/run_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags9_max_iter100/run_dir",
+    "sensitivity_runs/sensitivity_midas_lags9_max_iter100/report_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags9_max_iter100/report_dir",
+    "sensitivity_runs/sensitivity_midas_lags9_max_iter100/evidence_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags9_max_iter100/evidence_dir",
+    "sensitivity_runs/sensitivity_midas_lags9_max_iter100/variance_dir": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/sensitivity_runs/sensitivity_midas_lags9_max_iter100/variance_dir",
+    "convergence_stability": "outputs/full_state_space_release_revision_dfm/frozen/q1_manuscript_v1_sensitivity_midas/convergence_stability"
+  }
+}

@@ -1,0 +1,9 @@
+table,model_id,rows,min_share_positive_variance,min_share_finite_sd,mean_sd_to_rmse_min,mean_sd_to_rmse_max,coverage_90_min,coverage_90_max
+point,indicator_revision_only_dfm_kalman_em,6,1.0,1.0,0.5443895587477393,1.0611082332090611,0.8125,0.9375
+point,joint_indicator_revision_dfm_full_kalman_em,6,1.0,1.0,0.4637584662908491,1.014047826494224,0.775,0.9375
+point,monthly_mixed_frequency_kalman_em,6,1.0,1.0,0.5162175064404121,1.0351919774986649,0.8875,0.95
+point,revision_dfm_kalman_em,6,1.0,1.0,0.5504193800270977,1.0134827787023326,0.875,0.9375
+revision,indicator_revision_only_dfm_kalman_em,6,1.0,1.0,1.053490930532646,1.5930540084565334,0.9367088607594936,0.975
+revision,joint_indicator_revision_dfm_full_kalman_em,6,1.0,1.0,0.9738825724809866,1.5920631156049911,0.8860759493670886,0.9875
+revision,monthly_mixed_frequency_kalman_em,6,1.0,1.0,0.9391258801807776,1.549550397672953,0.9113924050632912,0.975
+revision,revision_dfm_kalman_em,6,1.0,1.0,1.0154169828383723,1.590239822769804,0.8734177215189873,0.975

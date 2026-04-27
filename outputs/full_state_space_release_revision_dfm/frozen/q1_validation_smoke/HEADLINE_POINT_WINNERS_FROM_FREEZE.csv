@@ -1,0 +1,7 @@
+timing_mode,checkpoint_id,target_id,best_models,best_RMSE,best_MAE,best_bias,best_relative_RMSFE,best_DM_test,best_sign_accuracy,best_n_forecasts,n_models_compared,structured_family_win
+exact,pre_advance,A,midas_umidas,0.1015344082616707,0.1015344082616707,-0.1015344082616707,0.4031999448592051,,1.0,1,11,False
+exact,pre_second,S,monthly_mixed_frequency_kalman_em,0.0098072359574197,0.0098072359574197,0.0098072359574197,0.0397879343402679,,1.0,1,11,False
+exact,pre_third,T,indicator_revision_only_dfm_kalman_em,0.0103782622088797,0.0103782622088797,-0.0103782622088797,0.0468071392432018,,1.0,1,11,False
+pseudo,pre_advance,A,midas_umidas,0.1283413614368553,0.1283413614368553,-0.1283413614368553,0.5096521537913961,,1.0,1,11,False
+pseudo,pre_second,S,monthly_mixed_frequency_kalman_em,0.0090255607446394,0.0090255607446394,0.0090255607446394,0.0366166797506415,,1.0,1,11,False
+pseudo,pre_third,T,indicator_revision_only_dfm_kalman_em,0.0113398535705271,0.0113398535705271,-0.0113398535705271,0.0511440253088844,,1.0,1,11,False

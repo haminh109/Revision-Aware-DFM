@@ -1,0 +1,12 @@
+{
+  "generated_utc": "2026-04-26T16:29:06+00:00",
+  "source_dir": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1",
+  "output_dir": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_variance_audit",
+  "output_files": {
+    "variance_point_audit": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_variance_audit/variance_point_audit.csv",
+    "variance_revision_audit": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_variance_audit/variance_revision_audit.csv",
+    "covariance_matrix_audit": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_variance_audit/covariance_matrix_audit.csv",
+    "summary": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_variance_audit/variance_audit_summary.md",
+    "manifest": "/Users/haaminh109/Desktop/Minh/Ta\u0300i lie\u0323\u0302u ho\u0323c ta\u0323\u0302p (DSEB)/Ki\u0300 6/Time Series/RADFM/paper_project/outputs/full_state_space_release_revision_dfm/exact_pseudo_backtest_max_iter1_variance_audit/manifest.json"
+  }
+}

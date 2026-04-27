@@ -1,0 +1,7 @@
+timing_mode,checkpoint_id,target_id,winner_models,winner_RMSE,n_forecasts
+exact,pre_advance,A,standard_dfm; release_dfm,3.065863149762876,80
+exact,pre_second,S,no_revision,0.5696627235545563,79
+exact,pre_third,T,no_revision,0.3621867125530698,80
+pseudo,pre_advance,A,standard_dfm; release_dfm,3.051686880620196,80
+pseudo,pre_second,S,no_revision,0.5696627235545563,79
+pseudo,pre_third,T,no_revision,0.3621867125530698,80

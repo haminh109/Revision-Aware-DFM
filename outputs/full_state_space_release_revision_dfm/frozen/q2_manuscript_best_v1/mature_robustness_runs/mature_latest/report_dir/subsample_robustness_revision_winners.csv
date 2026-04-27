@@ -1,0 +1,37 @@
+subsample,timing_mode,checkpoint_id,revision_target_id,best_models,best_RMSE,best_MAE,best_bias,best_relative_RMSFE,best_DM_test,best_sign_accuracy,best_n_forecasts,n_models_compared,structured_family_win
+full_sample,exact,pre_advance,DELTA_SA,monthly_mixed_frequency_kalman_em,0.5658529365643933,0.3976318407043949,0.04931868149657006,0.8344164435639542,,0.6329113924050633,79,10,False
+full_sample,exact,pre_second,DELTA_TS,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,0.23798607594936708,-0.05443417721518987,0.8859230727429768,,0.0,79,10,False
+full_sample,exact,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.3391311900184781,1.0525517602521295,0.14236737423782084,0.365752415711605,,0.0,80,10,False
+full_sample,pseudo,pre_advance,DELTA_SA,monthly_mixed_frequency_kalman_em,0.5655146048301134,0.3968656365603452,0.04947935133334099,0.8339175337868366,,0.6329113924050633,79,10,False
+full_sample,pseudo,pre_second,DELTA_TS,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,0.23798607594936708,-0.05443417721518987,0.8859230727429768,,0.0,79,10,False
+full_sample,pseudo,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.3391311900184781,1.0525517602521295,0.14236737423782084,0.365752415711605,,0.0,80,10,False
+exclude_pandemic,exact,pre_advance,DELTA_SA,monthly_mixed_frequency_kalman_em,0.5410897728168982,0.37751763651669545,0.04947428673428114,0.8851672591424281,,0.6363636363636364,77,10,False
+exclude_pandemic,exact,pre_second,DELTA_TS,revision_dfm_kalman_em,0.3615661283790245,0.2350943083861514,-0.04256283542563748,0.8920607219618263,,0.5714285714285714,77,10,True
+exclude_pandemic,exact,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.2854668753221028,1.0157974014409987,0.08227495424683627,0.4897046283412666,,0.0,78,10,False
+exclude_pandemic,pseudo,pre_advance,DELTA_SA,monthly_mixed_frequency_kalman_em,0.5406075502224376,0.37667512635636696,0.04967954181519493,0.8843783925371455,,0.6363636363636364,77,10,False
+exclude_pandemic,pseudo,pre_second,DELTA_TS,revision_dfm_kalman_em,0.3615652976023776,0.23506660299912416,-0.04259120928436064,0.8920586722587228,,0.5714285714285714,77,10,True
+exclude_pandemic,pseudo,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.2854668753221028,1.0157974014409987,0.08227495424683627,0.4897046283412666,,0.0,78,10,False
+pre_gfc,exact,pre_advance,DELTA_SA,standard_dfm; release_dfm,0.5765692099736649,0.47271642781884354,-0.10675537936363476,0.9218506191886485,,0.75,12,10,True
+pre_gfc,exact,pre_second,DELTA_TS,joint_indicator_revision_dfm_full_kalman_em,0.19386566013811588,0.15216113897458458,0.0027093192178710367,0.8740351388243172,,0.5,12,10,True
+pre_gfc,exact,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.3381595049853283,1.1798755808234338,0.40876211064113566,0.7681179934293202,,0.0,12,10,False
+pre_gfc,pseudo,pre_advance,DELTA_SA,standard_dfm; release_dfm,0.5765706861164084,0.47271890853390386,-0.10675786007869509,0.9218529793269955,,0.75,12,10,True
+pre_gfc,pseudo,pre_second,DELTA_TS,joint_indicator_revision_dfm_full_kalman_em,0.19386742675063676,0.15216224849403906,0.002710428737325462,0.8740431035222366,,0.5,12,10,True
+pre_gfc,pseudo,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.3381595049853283,1.1798755808234338,0.40876211064113566,0.7681179934293202,,0.0,12,10,False
+gfc_and_recovery,exact,pre_advance,DELTA_SA,monthly_mixed_frequency_kalman_em,0.687756666471996,0.4834471777061951,0.2092851505858945,0.8513664416818167,,0.6071428571428571,28,10,False
+gfc_and_recovery,exact,pre_second,DELTA_TS,no_revision; indicator_revision_only_dfm_kalman_em,0.5160822788775339,0.3388357142857142,0.021907142857142885,0.8707233196588532,,0.0,28,10,False
+gfc_and_recovery,exact,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.4791234069095194,1.2342635591032418,0.26030562719284683,0.5990920626880528,,0.0,28,10,False
+gfc_and_recovery,pseudo,pre_advance,DELTA_SA,monthly_mixed_frequency_kalman_em,0.6870922632316994,0.48189809613546236,0.20982779923601752,0.8505439841905141,,0.6071428571428571,28,10,False
+gfc_and_recovery,pseudo,pre_second,DELTA_TS,no_revision; indicator_revision_only_dfm_kalman_em,0.5160822788775339,0.3388357142857142,0.021907142857142885,0.8707233196588532,,0.0,28,10,False
+gfc_and_recovery,pseudo,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,1.4791234069095194,1.2342635591032418,0.26030562719284683,0.5990920626880528,,0.0,28,10,False
+post_gfc_pre_pandemic,exact,pre_advance,DELTA_SA,joint_indicator_revision_dfm_full_kalman_em,0.4038820811728949,0.2897941657727952,-0.012185808836841519,0.8341978424833694,,0.6842105263157895,19,10,True
+post_gfc_pre_pandemic,exact,pre_second,DELTA_TS,standard_dfm,0.22357645883210436,0.18906284169909568,-0.05876251516938443,0.854525985758236,,0.631578947368421,19,10,False
+post_gfc_pre_pandemic,exact,pre_third,DELTA_MT,release_dfm,1.3443116926091918,1.137373334935011,0.37343741321571977,0.860144946516631,,0.45,20,10,True
+post_gfc_pre_pandemic,pseudo,pre_advance,DELTA_SA,joint_indicator_revision_dfm_full_kalman_em,0.4041972440436157,0.29013888525053977,-0.013250110895916078,0.8348487953209467,,0.6842105263157895,19,10,True
+post_gfc_pre_pandemic,pseudo,pre_second,DELTA_TS,standard_dfm,0.22357568340788977,0.18907570952794583,-0.05874040921696413,0.8545230220287593,,0.631578947368421,19,10,False
+post_gfc_pre_pandemic,pseudo,pre_third,DELTA_MT,release_dfm,1.3437745115874835,1.1371293381424423,0.37345439474366915,0.8598012363906778,,0.45,20,10,True
+post_pandemic,exact,pre_advance,DELTA_SA,revision_dfm_kalman_em,0.2104096175199696,0.1569120802382524,0.11869558750350187,0.8957909857060488,,0.6875,16,10,True
+post_pandemic,exact,pre_second,DELTA_TS,standard_dfm,0.22658580721875066,0.16898884258505056,-0.027600742737959035,0.9917368203939798,,0.625,16,10,False
+post_pandemic,exact,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,0.5941805091146407,0.4864899724826202,-0.1406444168488838,0.14184236024268357,,0.0,16,10,False
+post_pandemic,pseudo,pre_advance,DELTA_SA,revision_dfm_kalman_em,0.21058934941371937,0.15685162459921986,0.11874178576160077,0.8965561703595005,,0.6875,16,10,True
+post_pandemic,pseudo,pre_second,DELTA_TS,standard_dfm,0.22677069884494588,0.16925239002450293,-0.02737677909174288,0.9925460671677784,,0.625,16,10,False
+post_pandemic,pseudo,pre_third,DELTA_MT,no_revision; indicator_revision_only_dfm_kalman_em,0.5941805091146407,0.4864899724826202,-0.1406444168488838,0.14184236024268357,,0.0,16,10,False

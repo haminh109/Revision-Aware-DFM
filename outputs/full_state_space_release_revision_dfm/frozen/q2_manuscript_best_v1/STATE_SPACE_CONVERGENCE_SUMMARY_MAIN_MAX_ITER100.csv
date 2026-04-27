@@ -1,0 +1,5 @@
+model_id,rows,min_convergence_rate,median_convergence_rate,max_mean_iterations,max_median_llf_relative_last_improvement
+indicator_revision_only_dfm_kalman_em,12,1.0,1.0,31.962025316455694,9.539247287019404e-05
+joint_indicator_revision_dfm_full_kalman_em,12,1.0,1.0,32.620253164556964,9.42091235380895e-05
+monthly_mixed_frequency_kalman_em,12,1.0,1.0,42.9875,9.5881518023639e-05
+revision_dfm_kalman_em,12,1.0,1.0,24.82278481012658,9.3669612333604e-05

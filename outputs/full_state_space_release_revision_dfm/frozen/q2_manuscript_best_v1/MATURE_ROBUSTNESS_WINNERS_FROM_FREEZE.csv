@@ -1,0 +1,37 @@
+variant,table,timing_mode,checkpoint_id,target_id,winner_models,winner_RMSE,n_forecasts,revision_target_id
+mature_1y,point,exact,pre_advance,A,standard_dfm; release_dfm,3.0658631497628757,80,
+mature_1y,point,exact,pre_second,S,no_revision,0.5696627235545563,79,
+mature_1y,point,exact,pre_third,T,no_revision,0.3621867125530698,80,
+mature_1y,point,pseudo,pre_advance,A,standard_dfm; release_dfm,3.051686880620195,80,
+mature_1y,point,pseudo,pre_second,S,no_revision,0.5696627235545563,79,
+mature_1y,point,pseudo,pre_third,T,no_revision,0.3621867125530698,80,
+mature_1y,revision,exact,pre_advance,,monthly_mixed_frequency_kalman_em,0.5650492032192075,79,DELTA_SA
+mature_1y,revision,exact,pre_second,,revision_dfm_kalman_em,0.3613388505314374,79,DELTA_TS
+mature_1y,revision,exact,pre_third,,no_revision; indicator_revision_only_dfm_kalman_em,1.0016142136324435,80,DELTA_MT
+mature_1y,revision,pseudo,pre_advance,,monthly_mixed_frequency_kalman_em,0.5647636789458039,79,DELTA_SA
+mature_1y,revision,pseudo,pre_second,,revision_dfm_kalman_em,0.3613356334874495,79,DELTA_TS
+mature_1y,revision,pseudo,pre_third,,no_revision; indicator_revision_only_dfm_kalman_em,1.0016142136324435,80,DELTA_MT
+mature_3y,point,exact,pre_advance,A,standard_dfm; release_dfm,3.0658631497628757,80,
+mature_3y,point,exact,pre_second,S,no_revision,0.5696627235545563,79,
+mature_3y,point,exact,pre_third,T,no_revision,0.3621867125530698,80,
+mature_3y,point,pseudo,pre_advance,A,standard_dfm; release_dfm,3.051686880620195,80,
+mature_3y,point,pseudo,pre_second,S,no_revision,0.5696627235545563,79,
+mature_3y,point,pseudo,pre_third,T,no_revision,0.3621867125530698,80,
+mature_3y,revision,exact,pre_advance,,monthly_mixed_frequency_kalman_em,0.562594462404261,79,DELTA_SA
+mature_3y,revision,exact,pre_second,,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,79,DELTA_TS
+mature_3y,revision,exact,pre_third,,no_revision; indicator_revision_only_dfm_kalman_em,1.4192460175958963,73,DELTA_MT
+mature_3y,revision,pseudo,pre_advance,,monthly_mixed_frequency_kalman_em,0.5622733231991663,79,DELTA_SA
+mature_3y,revision,pseudo,pre_second,,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,79,DELTA_TS
+mature_3y,revision,pseudo,pre_third,,no_revision; indicator_revision_only_dfm_kalman_em,1.4192460175958963,73,DELTA_MT
+mature_latest,point,exact,pre_advance,A,standard_dfm; release_dfm,3.0658631497628757,80,
+mature_latest,point,exact,pre_second,S,no_revision,0.5696627235545563,79,
+mature_latest,point,exact,pre_third,T,no_revision,0.3621867125530698,80,
+mature_latest,point,pseudo,pre_advance,A,standard_dfm; release_dfm,3.051686880620195,80,
+mature_latest,point,pseudo,pre_second,S,no_revision,0.5696627235545563,79,
+mature_latest,point,pseudo,pre_third,T,no_revision,0.3621867125530698,80,
+mature_latest,revision,exact,pre_advance,,monthly_mixed_frequency_kalman_em,0.5658529365643932,79,DELTA_SA
+mature_latest,revision,exact,pre_second,,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,79,DELTA_TS
+mature_latest,revision,exact,pre_third,,no_revision; indicator_revision_only_dfm_kalman_em,1.339131190018478,80,DELTA_MT
+mature_latest,revision,pseudo,pre_advance,,monthly_mixed_frequency_kalman_em,0.5655146048301134,79,DELTA_SA
+mature_latest,revision,pseudo,pre_second,,no_revision; indicator_revision_only_dfm_kalman_em,0.3613823734957444,79,DELTA_TS
+mature_latest,revision,pseudo,pre_third,,no_revision; indicator_revision_only_dfm_kalman_em,1.339131190018478,80,DELTA_MT
